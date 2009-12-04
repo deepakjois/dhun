@@ -8,7 +8,7 @@ Here is what is planned.
 
 * Music playback using CoreAudio APIs
 
-* Spotlight metadata querying by keyword to find audio files on computer
+* Simple query syntax (like `artist:Rahman`)  Spotlight metadata querying by keyword to find audio files on computer
 
 # Feedback
 
