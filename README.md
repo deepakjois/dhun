@@ -28,6 +28,5 @@ Here is what is planned.
 * Client server model, where you can issue commands to the server like
   `dhun play Spirit`, `dhun pause`, `dhun next`, `dhun prev` and `dhun stop`
 
-* Simple query syntax (like `artist:Rahman` or `album spirit`) Spotlight
-  metadata querying by keyword to find audio files on computer
+* Flexible query syntax (like `artist:Rahman` or `album spirit`)
 
