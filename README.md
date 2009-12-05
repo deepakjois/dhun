@@ -7,14 +7,27 @@
 
 Dhun is a minimalist commandline MP3 player for OS X.
 
+It uses Spotlight to search for audio files on your computer and play them.
+
 # Features
+
+## Sneak Peek
+
+  deepak@vyombook ~/code/personal/dhun (master) $ ./dhun Spirit
+  Querying for kMDItemContentTypeTree == 'public.audio' && kMDItemAlbum == '*Spirit*'wc
+  /Users/deepak/Dropbox/shared/music/Coke Studio/Mai-Ne.mp3
+  /Users/deepak/Dropbox/shared/music/Coke Studio/Saari-Raat.mp3
+  /Users/deepak/Dropbox/shared/music/Coke Studio/Bulleya.mp3
+  /Users/deepak/Dropbox/shared/music/Coke Studio/Mahi-Ve.mp3
+  /Users/deepak/Dropbox/shared/music/Coke Studio/Chup.mp3
+  5 results total
+  Now Playing /Users/deepak/Dropbox/shared/music/Coke Studio/Mai-Ne.mp3
 
 Here is what is planned.
 
-* Music playback using CoreAudio APIs
+* Client server model, where you can issue commands to the server like
+  `dhun play Spirit`, `dhun pause`, `dhun next`, `dhun prev` and `dhun stop`
 
-* Simple query syntax (like `artist:Rahman`)  Spotlight metadata querying by keyword to find audio files on computer
+* Simple query syntax (like `artist:Rahman` or `album spirit`) Spotlight
+  metadata querying by keyword to find audio files on computer
 
-# Feedback
-
-email [deepak.jois@gmail.com](deepak.jois@gmail.com)
