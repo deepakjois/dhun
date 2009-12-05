@@ -4,8 +4,7 @@ void notificationCallback(CFNotificationCenterRef  center,
                           void                    *observer,
                           CFStringRef              name,
                           const void              *object,
-                          CFDictionaryRef          userInfo)
-{
+                          CFDictionaryRef          userInfo) {
   //CFDictionaryRef attributes;
   //CFArrayRef      attributeNames;
   CFTypeRef         attrValue = NULL;
@@ -14,20 +13,26 @@ void notificationCallback(CFNotificationCenterRef  center,
   MDQueryRef      queryRef = (MDQueryRef)object;
   CFStringRef      attrName = NULL;
   CFStringEncoding  encoding = CFStringGetSystemEncoding();
-  
+
   if (CFStringCompare(name, kMDQueryDidFinishNotification, 0)
       == kCFCompareEqualTo) { // gathered results
     // disable updates, process results, and reenable updates
     MDQueryDisableUpdates(queryRef);
     count = MDQueryGetResultCount(queryRef);
     if (count > 0) {
+      queryResults = (SearchResults*) realloc(queryResults,sizeof(SearchResults));
+      queryResults->size=count;
+      queryResults->files = (char**) malloc(count*sizeof(char*));
       for (idx = 0; idx < count; idx++) {
         itemRef = (MDItemRef)MDQueryGetResultAtIndex(queryRef, idx);
         //attributeNames = MDItemCopyAttributeNames(itemRef);
         //attributes = MDItemCopyAttributes(itemRef, attributeNames);
-        attrName = CFStringCreateWithCString(kCFAllocatorDefault,
+        attrName = CFStringCreateWithCString(NULL,
                                              "kMDItemPath", encoding);
         attrValue = MDItemCopyAttribute(itemRef, attrName);
+        const char* convertedString =  CFStringGetCStringPtr((CFStringRef)attrValue, encoding);
+        queryResults->files[idx] = malloc(strlen(convertedString)+1);
+        strcpy(queryResults->files[idx],convertedString);
         CFShow(attrValue);
         //CFRelease(attributes);
         //CFRelease(attributeNames);
@@ -42,7 +47,7 @@ void notificationCallback(CFNotificationCenterRef  center,
   // ignore kMDQueryProgressNotification
 }
 
-int main(int argc, char *argv[])
+int getFilesForQuery(const char* queryStr)
 {
   int                     i;
   CFStringRef             rawQuery = NULL;
@@ -51,9 +56,9 @@ int main(int argc, char *argv[])
   CFNotificationCenterRef localCenter;
   MDQueryBatchingParams   batchingParams;
   char* query;
-  asprintf(&query,QUERY_TEMPLATE,argv[1]);
+  asprintf(&query,QUERY_TEMPLATE,queryStr);
   printf("Querying for %s\n", query);
-  rawQuery = CFStringCreateWithCString(kCFAllocatorDefault, 
+  rawQuery = CFStringCreateWithCString(kCFAllocatorDefault,
                                        query,
                                        CFStringGetSystemEncoding());
 
@@ -85,7 +90,7 @@ int main(int argc, char *argv[])
 
   // go execute the query
   MDQueryExecute(queryRef, kMDQuerySynchronous);
- 
+
  out:
   CFRelease(rawQuery);
   if (queryRef)
