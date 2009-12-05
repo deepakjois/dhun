@@ -11,7 +11,7 @@ It uses Spotlight to search for audio files on your computer and play them.
 
 # Features
 
-## Sneak Peek
+### Sneak Peek
 
     deepak@vyombook ~/code/personal/dhun (master) $ ./dhun Spirit
     Querying for kMDItemContentTypeTree == 'public.audio' && kMDItemAlbum == '*Spirit*'wc
