@@ -5,7 +5,7 @@
 >
 > Source : [Wikipedia](http://en.wikipedia.org/wiki/Dhun)
 
-Dhun is a minimalist commandline MP3 player for OS X.
+Dhun is a minimalist commandline music player for OS X.
 
 It uses Spotlight to search for audio files on your computer and play them.
 
