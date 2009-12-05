@@ -1,4 +1,4 @@
-#include "query.h"
+#include "dhun.h"
 
 void notificationCallback(CFNotificationCenterRef  center,
                           void                    *observer,
