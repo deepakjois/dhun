@@ -1,24 +1,26 @@
+#include "dhun.h"
 // Include the Ruby headers and goodies
 #include "ruby.h"
 
 // Defining a space for information and references about the module to be stored internally
-VALUE DhunRuby = Qnil;
+static VALUE DhunExt = Qnil;
+
+static VALUE Spotlight = Qnil;
+
+static VALUE Player = Qnil;
 
 // Prototype for the initialization method - Ruby calls this, not you
 void Init_dhunruby();
-
-// Prototype for our method 'test1' - methods are prefixed by 'method_' here
-VALUE method_test1(VALUE self);
+void method_play_file(VALUE self, VALUE fileName);
 
 // The initialization method for this module
 void Init_dhunruby() {
-  DhunRuby = rb_define_module("DhunRuby");
-  rb_define_method(DhunRuby, "test1", method_test1, 0);
+  DhunExt = rb_define_module("DhunExt");
+  Player = rb_define_class_under(DhunExt, "Player", rb_cObject);
+  rb_define_singleton_method(Player, "play_file", method_play_file, 1);
 }
 
-// Our 'test1' method.. it simply returns a value of '10' for now.
-VALUE method_test1(VALUE self) {
-  printf("DhunRuby!");
-  int x = 10;
-  return INT2NUM(x);
+void method_play_file(VALUE self, VALUE filename) {
+  playFile(StringValuePtr(filename));
 }
+
