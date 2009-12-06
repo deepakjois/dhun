@@ -8,11 +8,30 @@
 
 #define SOCK_PATH "/tmp/dhun.sock"
 
-void termination_handler (int signum)
-{
+void termination_handler (int signum) {
   printf("Terminating..\n");  
   unlink ("/tmp/dhun.sock");
   exit(1);
+}
+
+void daemonize() {
+  pid_t pid = fork();
+  
+  if (pid > 0) {
+    printf("Dhun is playing..\n");
+    exit(0);
+  }
+  else if (pid < 0) {
+    perror("fork");
+    exit(1);
+  }
+  else {
+    pid_t sid = setsid();
+    if (sid < 0) {
+      perror("setsid");
+      exit(1);
+    }
+  }
 }
 
 int main(void)
@@ -45,23 +64,7 @@ int main(void)
         exit(1);
     }
 
-    pid_t pid = fork();
-
-    if (pid > 0) {
-      printf("Dhun is playing..\n");
-      exit(0);
-    }
-    else if (pid < 0) {
-      perror("fork");
-      exit(1);
-    }
-    else {
-      pid_t sid = setsid();
-      if (sid < 0) {
-        perror("setsid");
-        exit(1);
-      }
-    }
+    daemonize();
 
     if (listen(s, 5) == -1) {
         perror("listen");
