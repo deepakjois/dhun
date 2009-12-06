@@ -7,7 +7,9 @@ extension_name = 'dhunruby'
 # The destination
 dir_config(extension_name)
 
-$LDFLAGS << "-framework AudioToolbox -framework CoreServices"
-$CFLAGS << "-std=c99"
+# Config changes
+$LDFLAGS << " -framework AudioToolbox -framework CoreServices"
+$CFLAGS << " -std=c99"
+
 # Do the work
 create_makefile(extension_name)

@@ -23,12 +23,12 @@ typedef struct {
 } AQPlayerState;
 
 
-/* typedef struct {  */
-/*   int size; */
-/*   char** files; */
-/* } SearchResults; */
+typedef struct {
+  int size;
+  char** files;
+} SearchResults;
 
-/* SearchResults *queryResults; */
+static SearchResults *queryResults;
 
-extern void playFile(const char* filePath);
-extern int getFilesForQuery(const char* queryStr);
+void playFile(const char* filePath);
+int getFilesForQuery(const char* queryStr);

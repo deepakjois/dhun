@@ -11,16 +11,22 @@ static VALUE Player = Qnil;
 
 // Prototype for the initialization method - Ruby calls this, not you
 void Init_dhunruby();
-void method_play_file(VALUE self, VALUE fileName);
-
+static VALUE method_play_file(VALUE self, VALUE fileName);
+static VALUE method_query_spotlight(VALUE self, VALUE query);
 // The initialization method for this module
 void Init_dhunruby() {
-  DhunExt = rb_define_module("DhunExt");
-  Player = rb_define_class_under(DhunExt, "Player", rb_cObject);
-  rb_define_singleton_method(Player, "play_file", method_play_file, 1);
+  DhunExt = rb_define_class("DhunExt", rb_cObject);
+  rb_define_singleton_method(DhunExt, "play_file", method_play_file, 1);
+  rb_define_singleton_method(DhunExt, "query_spotlight", method_query_spotlight, 1);
 }
 
-void method_play_file(VALUE self, VALUE filename) {
+static VALUE method_play_file(VALUE self, VALUE filename) {
   playFile(StringValuePtr(filename));
+  return Qnil;
+}
+
+static VALUE method_query_spotlight(VALUE self, VALUE query) {
+  getFilesForQuery(StringValuePtr(query));
+  return Qnil;
 }
 
