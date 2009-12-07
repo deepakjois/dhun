@@ -1,5 +1,7 @@
 #include "dhun.h"
 
+AQPlayerState aqData;
+
 static void HandleOutputBuffer (void                *aqData,
                                 AudioQueueRef       inAQ,
                                 AudioQueueBufferRef inBuffer) {
@@ -26,6 +28,7 @@ static void HandleOutputBuffer (void                *aqData,
   } else {
     AudioQueueStop (pAqData->mQueue,
                     false);
+    printf("Play Stopped!\n");
     pAqData->mIsRunning = false;
   }
 }
@@ -69,7 +72,6 @@ void playFile(const char* filePath) {
                                                                   strlen (filePath),
                                                                   false);
 
-  AQPlayerState aqData;
 
   OSStatus result = AudioFileOpenURL(audioFileURL,
                                      fsRdPerm,
@@ -146,7 +148,6 @@ void playFile(const char* filePath) {
   aqData.mIsRunning = true;
 
   //LOG("%d\n", aqData.mNumPacketsToRead);
-
   for (int i = 0; i < kNumberBuffers; ++i) {
     AudioQueueAllocateBuffer (aqData.mQueue,
                               aqData.bufferByteSize,
@@ -174,18 +175,11 @@ void playFile(const char* filePath) {
   AudioQueueStart (aqData.mQueue,
                    NULL);
 
-  do {
-    CFRunLoopRunInMode (kCFRunLoopDefaultMode,
-                        0.25,
-                        false);
-  } while (aqData.mIsRunning);
+}
 
-  CFRunLoopRunInMode (kCFRunLoopDefaultMode,
-                      1,
-                      false);
 
-  AudioQueueDispose (aqData.mQueue,
-                     true);
+void free_aqData() {
+  AudioQueueDispose (aqData.mQueue, true);
 
   AudioFileClose (aqData.mAudioFile);
 

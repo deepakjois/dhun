@@ -1,5 +1,7 @@
 #include "dhun.h"
 
+SearchResults *queryResults;
+
 void notificationCallback(CFNotificationCenterRef  center,
                           void                    *observer,
                           CFStringRef              name,
