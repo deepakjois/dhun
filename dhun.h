@@ -28,7 +28,7 @@ typedef struct {
   char** files;
 } SearchResults;
 
-SearchResults *queryResults;
+static SearchResults *queryResults;
 
 void playFile(const char* filePath);
 int getFilesForQuery(const char* queryStr);
