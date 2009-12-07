@@ -4,7 +4,7 @@ module Dhun
 
   # Heavily lifted from Thin codebase
   class Runner
-    COMMANDS = %w(start stop)
+    COMMANDS = %w(start stop play next prev)
     
     # Parsed options
     attr_accessor :options
@@ -24,7 +24,10 @@ module Dhun
     def initialize(argv)
       @argv = argv
       # Default options values
-      @options = {}      
+      @options = {
+        :socket => "/tmp/dhun.sock",
+        :pid    => 'tmp/pids/dhun.pid',
+      }
       parse!
     end
 
@@ -60,7 +63,8 @@ module Dhun
     end
 
     def run_command
-      puts "Run command #{@command}"
+      controller = Controller.new(@options)
+      controller.send(@command,*@arguments)
     end
   end
 end
