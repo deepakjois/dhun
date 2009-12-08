@@ -1,9 +1,7 @@
 module Dhun
   class Controller
-    # Command line options passed to the thin script
+
     attr_accessor :options
-    
-    IS_NOT_IMPLEMENTED = "is not implemented yet"
     
     def initialize(options)
       @options = options
@@ -15,19 +13,24 @@ module Dhun
     end
     
     def stop
-      puts "stop #{IS_NOT_IMPLEMENTED}"
+      client = DhunClient.new(@options)
+      res = client.send("stop")
+      puts "Dhun is stopped"
     end
 
     def play(query)
-      puts "play #{IS_NOT_IMPLEMENTED}"
+      client = DhunClient.new(@options)
+      res = client.send("play #{query}")
     end
 
     def next
-      puts "next #{IS_NOT_IMPLEMENTED}"
+      client = DhunClient.new(@options)
+      res = client.send("next")
     end
     
-    def prev
-      puts "prev #{IS_NOT_IMPLEMENTED}"
+    protected
+    def exit_if_server_not_running
+      exit unless DhunClient.is_server.running?      
     end
   end
 end

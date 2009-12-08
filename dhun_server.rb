@@ -2,7 +2,7 @@ module Dhun
   # Handler for commands sent from client
   module DhunServer
     def post_init
-      puts "-- client connected"
+      #puts "-- client connected"
     end
 
     def receive_data data
@@ -28,7 +28,7 @@ module Dhun
     end
 
     def unbind
-      puts "-- client disconnected"
+      #puts "-- client disconnected"
     end
   end
 end

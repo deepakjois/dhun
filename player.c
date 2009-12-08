@@ -28,7 +28,7 @@ static void HandleOutputBuffer (void                *aqData,
   } else {
     AudioQueueStop (pAqData->mQueue,
                     false);
-    printf("Play Stopped!\n");
+    //printf("Play Stopped!\n");
     pAqData->mIsRunning = false;
   }
 }

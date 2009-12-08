@@ -58,7 +58,7 @@ int getFilesForQuery(const char* queryStr)
   CFNotificationCenterRef localCenter;
   MDQueryBatchingParams   batchingParams;
   char* query;
-  asprintf(&query,QUERY_TEMPLATE,queryStr);
+  asprintf(&query,QUERY_TEMPLATE,queryStr,queryStr,queryStr);
   printf("Querying for %s\n", query);
   rawQuery = CFStringCreateWithCString(kCFAllocatorDefault,
                                        query,

@@ -7,7 +7,7 @@
 #include <CoreServices/CoreServices.h>
 
 #define LOG(f,s) fprintf(stderr,f,s);fflush(stderr);
-#define QUERY_TEMPLATE "kMDItemContentTypeTree == 'public.audio' && kMDItemAlbum == '*%s*'wc"
+#define QUERY_TEMPLATE "kMDItemContentTypeTree == 'public.audio' && (kMDItemAlbum == '*%s*'wc || kMDItemTitle == '*%s*'wc || kMDItemDisplayName == '*%s*'wc)"
 
 #define  kNumberBuffers 3
 typedef struct {

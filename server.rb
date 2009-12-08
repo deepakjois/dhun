@@ -9,29 +9,29 @@ module Dhun
     end
 
     def start
-      at_exit { stop }
       puts "Starting Dhun"
+      at_exit { remove_socket_file }
       EventMachine::run {
         EventMachine::start_server @socket, DhunServer
       }
     end
 
-    def stop
+    def self.stop
       puts "Stopping Dhun"
-      remove_socket_file
+      EventMachine.stop if EventMachine.reactor_running?
       exit
     end
 
+
     protected
     # Register signals:
-    # * INT calls +stop+ to shutdown gracefully.
-    # * TERM calls <tt>stop!</tt> to force shutdown.    
+    # * calls +stop+ to shutdown gracefully.
     def setup_signals
-      trap('QUIT') { stop }
-      trap('INT')  { stop }
-      trap('TERM') { stop }
+      trap('QUIT') { Server.stop }
+      trap('INT')  { Server.stop }
+      trap('TERM') { Server.stop }
     end
-    
+     
     def remove_socket_file
       File.delete(@socket) if File.exist?(@socket)
     end
