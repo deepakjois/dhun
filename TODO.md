@@ -1,8 +1,6 @@
 IMMEDIATE
 =========
 
-* Better Querying Implementation and 'query' command
-
 * Fix bug with arguments w/ space
 
 * Sending Response from Server using JSON protocol, and 'status 
@@ -16,6 +14,8 @@ IMMEDIATE
 
 LONG TERM
 ==========
+
+* Advanced Querying Support
 
 * iTunes support
 
