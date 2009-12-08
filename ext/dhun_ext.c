@@ -66,13 +66,19 @@ static VALUE method_query_spotlight(VALUE self, VALUE query) {
   getFilesForQuery(StringValuePtr(query));
   VALUE files = rb_ary_new();
   
+  if (queryResults != NULL) { // there were some results
+    
+    for(int i=0; i<queryResults->size;i++) {
+      rb_ary_push(files,rb_str_new2(queryResults->files[i]));
+      free(queryResults->files[i]);
+    }
 
-  for(int i=0; i<queryResults->size;i++) {
-    rb_ary_push(files,rb_str_new2(queryResults->files[i]));
-    free(queryResults->files[i]);
+    if (queryResults->size > 0) {
+      free(queryResults->files);
+    }
+
+    free(queryResults);
   }
-
-  free(queryResults->files);
 
   return files;
 }
