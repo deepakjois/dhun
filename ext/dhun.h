@@ -29,7 +29,7 @@ typedef struct {
   char** files;
 } SearchResults;
 
-extern SearchResults *queryResults;
+extern SearchResults queryResults;
 
 
 void playFile(const char* filePath);

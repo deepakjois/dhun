@@ -1,6 +1,6 @@
 #include "dhun.h"
 
-SearchResults *queryResults;
+SearchResults queryResults;
 
 void notificationCallback(CFNotificationCenterRef  center,
                           void                    *observer,
@@ -22,9 +22,8 @@ void notificationCallback(CFNotificationCenterRef  center,
     MDQueryDisableUpdates(queryRef);
     count = MDQueryGetResultCount(queryRef);
     if (count > 0) {
-      queryResults = (SearchResults*) realloc(queryResults,sizeof(SearchResults));
-      queryResults->size=count;
-      queryResults->files = (char**) malloc(count*sizeof(char*));
+      queryResults.size=count;
+      queryResults.files = (char**) malloc(count*sizeof(char*));
       for (idx = 0; idx < count; idx++) {
         itemRef = (MDItemRef)MDQueryGetResultAtIndex(queryRef, idx);
         //attributeNames = MDItemCopyAttributeNames(itemRef);
@@ -33,8 +32,8 @@ void notificationCallback(CFNotificationCenterRef  center,
                                              "kMDItemPath", encoding);
         attrValue = MDItemCopyAttribute(itemRef, attrName);
         const char* convertedString =  CFStringGetCStringPtr((CFStringRef)attrValue, encoding);
-        queryResults->files[idx] = malloc(strlen(convertedString)+1);
-        strcpy(queryResults->files[idx],convertedString);
+        queryResults.files[idx] = malloc(strlen(convertedString)+1);
+        strcpy(queryResults.files[idx],convertedString);
         CFShow(attrValue);
         //CFRelease(attributes);
         //CFRelease(attributeNames);
