@@ -8,10 +8,11 @@ module Dhun
     def receive_data data
       @arguments = data.split(/\W+/)
       if @arguments.empty?
-        
+       puts "Invalid command" 
       else
         puts "recieved: #{data}"
         @command = @arguments.shift # first word is always the command
+        @arguments = data.slice!(@command) && data.strip
         handle_client_request
       end
       close_connection

@@ -6,9 +6,9 @@ module Dhun
       Player.instance.pause
     end
     
-    def play(query_string)
+    def play(*args)
       @player = Player.instance
-      q = Query.new(query_string)
+      q = Query.new(args.join(" "))
       if q.is_valid?
         @player.play_files q.execute_spotlight_query
       else
@@ -16,7 +16,7 @@ module Dhun
       end
     end
     
-    def next
+    def next(*args)
       @player = Player.instance
       @player.next
     end

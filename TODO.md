@@ -1,8 +1,6 @@
 IMMEDIATE
 =========
 
-* Fix bug with arguments w/ space
-
 * Sending Response from Server using JSON protocol, and 'status 
   implementation
 
@@ -14,6 +12,8 @@ IMMEDIATE
 
 LONG TERM
 ==========
+
+* Display info from idv3 tags
 
 * Advanced Querying Support
 

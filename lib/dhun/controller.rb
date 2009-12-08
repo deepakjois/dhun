@@ -22,8 +22,8 @@ module Dhun
       puts "Dhun is stopped"
     end
     
-    def query(query_string)
-      q = Query.new(query_string)
+    def query(*args)
+      q = Query.new(args.join(' '))
       if q.is_valid?
         files = q.execute_spotlight_query
         puts(files.empty? ? "No Results Found" : "#{files.size} Results\n" + files.join("\n"))
@@ -32,14 +32,14 @@ module Dhun
       end
     end
 
-    def play(query_string)
+    def play(*args)
       client = DhunClient.new(@options)
-      res = client.send("play #{query_string}")
+      res = client.send("play #{args.join(' ')}")
     end
 
-    def next
+    def next(*args)
       client = DhunClient.new(@options)
-      res = client.send("next")
+      res = client.send("next #{args.join(' ')}")
     end
   end
 end
