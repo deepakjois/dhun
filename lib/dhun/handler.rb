@@ -33,5 +33,21 @@ module Dhun
       result = Result.new :success, (next_track || "No More Tracks")
       return result.to_json
     end
+
+    def pause
+      @player = Player.instance
+      @player.stop
+      track = @player.queue.first
+      result = Result.new :success, "Dhun is paused. " + (track ? "Next track is #{track}" : "No more tracks in queue.")
+      return result.to_json
+    end
+
+    def resume
+      @player = Player.instance
+      track = @player.queue.first
+      @player.play
+      result = Result.new :success,  (track ? "Dhun is playing. Next track is #{track}" : "No more tracks in queue.")
+      return result.to_json
+    end
   end
 end

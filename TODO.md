@@ -1,22 +1,16 @@
 IMMEDIATE
 =========
 
-* Sending Response from Server using JSON protocol, and 'status 
-  implementation
-
-* Prev,Enqueue,Playlist,Pause (stop playback) command implementation
+* Enqueue,Playlist,Pause (stop playback) command implementation
 
 * Daemonizing/Logging of Server
 
 * Gem files
 
-CODE CLEANUP
-=============
+After first release
+===================
 
-* Command and Response into objects
-
-LONG TERM
-==========
+* Prev, by keeping a history
 
 * Display info from idv3 tags
 
@@ -24,4 +18,5 @@ LONG TERM
 
 * iTunes support
 
-* Pause functionality
+* Pause and Skip functionality
+

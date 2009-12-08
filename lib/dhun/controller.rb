@@ -48,8 +48,18 @@ module Dhun
     end
 
     def next(*args)
-     resp = get_json_response("next")
-     puts resp[:message] if resp
+      resp = get_json_response("next")
+      puts resp[:message] if resp
+    end
+
+    def pause
+      resp = get_json_response("pause")
+      puts resp[:message] if resp
+    end
+
+    def resume
+      resp = get_json_response("resume")
+      puts resp[:message] if resp
     end
 
     protected
