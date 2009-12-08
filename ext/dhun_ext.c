@@ -23,7 +23,7 @@ static VALUE method_query_spotlight(VALUE self, VALUE query);
 static VALUE method_is_playing(VALUE self);
 
 // The initialization method for this module
-void Init_dhunruby() {
+void Init_dhun_ext() {
   DhunExt = rb_define_class("DhunExt", rb_cObject);
   rb_define_singleton_method(DhunExt, "play_file", method_play_file, 1);
   rb_define_singleton_method(DhunExt, "query_spotlight", method_query_spotlight, 1);
