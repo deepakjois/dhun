@@ -17,7 +17,7 @@ module Dhun
             end.join(" || ")
 
       @spotlight_query = "kMDItemContentTypeTree == 'public.audio' && (#{str})"
-      puts @spotlight_query
+      #puts @spotlight_query
       @is_valid = true
     end
 

@@ -10,6 +10,11 @@ IMMEDIATE
 
 * Gem files
 
+CODE CLEANUP
+=============
+
+* Command and Response into objects
+
 LONG TERM
 ==========
 

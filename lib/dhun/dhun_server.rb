@@ -1,3 +1,4 @@
+require 'json'
 module Dhun
   # Handler for commands sent from client
   module DhunServer
@@ -6,22 +7,29 @@ module Dhun
     end
 
     def receive_data data
-      @arguments = data.split(/\W+/)
-      if @arguments.empty?
-       puts "Invalid command" 
-      else
-        puts "recieved: #{data}"
-        @command = @arguments.shift # first word is always the command
-        @arguments = data.slice!(@command) && data.strip
-        handle_client_request
+      begin
+       puts data
+       cmd = JSON.parse(data)
+       @command = cmd["command"]
+       @arguments = cmd["arguments"]
+       handle_client_request
+      rescue StandardError => ex
+        puts "Error parsing command : #{ex.message}"
+        puts ex.backtrace
+      ensure
+        close_connection true
       end
-      close_connection
     end
 
     def handle_client_request
       handler = Handler.new
       begin
+        if @command.nil?
+          raise "Command Not Found"
+        end
         result = handler.send(@command,*@arguments)
+        puts "Sending #{result}"
+        send_data result
       rescue StandardError => ex
         puts "-- error : #{ex.message}"
         puts ex.backtrace

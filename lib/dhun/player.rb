@@ -27,7 +27,7 @@ module Dhun
       else
         stop
         empty_queue
-        @queue = files
+        files.each { |f| queue.push f }
         play
       end
     end
@@ -56,7 +56,9 @@ module Dhun
 
     def next
       stop # stops current track
+      next_track = @queue.first
       play # start playing with the next track
+      return next_track
     end
   end
 end

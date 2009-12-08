@@ -1,3 +1,4 @@
+require 'json'
 module Dhun
   class Controller
 
@@ -17,9 +18,7 @@ module Dhun
     end
     
     def stop
-      client = DhunClient.new(@options)
-      res = client.send("stop")
-      puts "Dhun is stopped"
+      send_command("stop")
     end
     
     def query(*args)
@@ -33,13 +32,42 @@ module Dhun
     end
 
     def play(*args)
-      client = DhunClient.new(@options)
-      res = client.send("play #{args.join(' ')}")
+      resp = get_json_response("play", args)
+      return unless resp
+      # Process response
+      case resp.success?
+      when true
+        puts resp[:message]
+        # Print list of files
+        resp[:files].each do |f|
+          puts f
+        end
+      else
+        puts resp[:message]
+      end
     end
 
     def next(*args)
+     resp = get_json_response("next")
+     puts resp[:message] if resp
+    end
+
+    protected
+    def send_command(command,arguments=[])
+      cmd = { "command" => command, "arguments" => arguments }.to_json
       client = DhunClient.new(@options)
-      res = client.send("next #{args.join(' ')}")
+      resp = client.send(cmd)
+    end
+
+    def get_json_response(command,*args)
+      begin 
+         resp = send_command(command,args)
+         return Result.from_json_str(resp)
+      rescue 
+        puts "Invalid Response From Server"
+        puts $!
+        return nil
+      end
     end
   end
 end

@@ -1,4 +1,5 @@
 require 'socket'
+require 'json'
 module Dhun
   class DhunClient
     def initialize(options)
@@ -12,7 +13,9 @@ module Dhun
     def send(message)
       u = UNIXSocket.new(@socket)
       u.puts message
+      resp = u.read
       u.close
+      return resp
     end
 
     def self.is_dhun_server_running?(socket)

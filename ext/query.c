@@ -38,7 +38,7 @@ void notificationCallback(CFNotificationCenterRef  center,
         //CFRelease(attributes);
         //CFRelease(attributeNames);
       }
-      printf("%ld results total\n", count);
+      //printf("%ld results total\n", count);
     }
     MDQueryEnableUpdates(queryRef);
   } else if (CFStringCompare(name, kMDQueryDidUpdateNotification, 0)
