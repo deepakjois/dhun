@@ -8,4 +8,5 @@ module Dhun
   autoload :DhunClient, 'dhun/dhun_client'
   autoload :Handler, 'dhun/handler'
   autoload :Player, 'dhun/player'
+  autoload :Query, 'dhun/query'
 end

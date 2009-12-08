@@ -34,7 +34,7 @@ void notificationCallback(CFNotificationCenterRef  center,
         const char* convertedString =  CFStringGetCStringPtr((CFStringRef)attrValue, encoding);
         queryResults.files[idx] = malloc(strlen(convertedString)+1);
         strcpy(queryResults.files[idx],convertedString);
-        CFShow(attrValue);
+        //CFShow(attrValue);
         //CFRelease(attributes);
         //CFRelease(attributeNames);
       }

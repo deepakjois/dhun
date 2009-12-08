@@ -1,15 +1,22 @@
-* Packaging of native extensions and renaming of methods and classes
+IMMEDIATE
+=========
 
-* Daemonizing/Logging of Server
+* Better Querying Implementation and 'query' command
 
-* Better Querying Implementation
-
-* Prev,Enqueue command implementation
+* Fix bug with arguments w/ space
 
 * Sending Response from Server using JSON protocol, and 'status 
   implementation
 
-* Pause functionality
+* Prev,Enqueue,Playlist,Pause (stop playback) command implementation
+
+* Daemonizing/Logging of Server
+
+* Gem files
+
+LONG TERM
+==========
 
 * iTunes support
 
+* Pause functionality
