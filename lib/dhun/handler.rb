@@ -57,7 +57,7 @@ module Dhun
     def next(*args)
       @player = Player.instance
       next_track = @player.next
-      result = Result.new :success, ("Dhun is playing #{next_track}" || "No More Tracks")
+      result = Result.new :success, (next_track ?  "Dhun is playing #{next_track}" : "No More Tracks")
       return result.to_json
     end
 
