@@ -17,9 +17,6 @@ module Dhun
       @queue.clear
     end
 
-    def enqueue(file)
-      @queue.push(file)
-    end
     
     def play_files(files)
       if files.empty?
@@ -27,9 +24,14 @@ module Dhun
       else
         stop
         empty_queue
-        files.each { |f| queue.push f }
+        files.each { |f| self.queue.push f }
         play
       end
+    end
+
+    def enqueue(files)
+      files.each { |f| self.queue.push f }
+      play
     end
 
     def play

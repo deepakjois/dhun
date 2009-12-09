@@ -5,7 +5,7 @@ module Dhun
   # Heavily lifted from Thin codebase
   class Runner
     COMMANDS = %w(start query)
-    CLIENT_COMMANDS = %w(stop play pause resume next)
+    CLIENT_COMMANDS = %w(stop play pause resume next enqueue status)
     # Parsed options
     attr_accessor :options
     
@@ -43,6 +43,8 @@ Usage:
    dhun play spirit
    dhun pause
    dhun resume
+   dhun enqueue rahman
+   dhun status
    dhun stop
 EOF
         opts.separator ""

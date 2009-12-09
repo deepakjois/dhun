@@ -1,14 +1,11 @@
-IMMEDIATE
-=========
+* Gem files
 
-* Enqueue,Playlist,Pause (stop playback) command implementation
+TODO
+====
 
 * Daemonizing/Logging of Server
 
-* Gem files
-
-After first release
-===================
+* Better querying mechanism using a treetop parser
 
 * Prev, by keeping a history
 

@@ -17,13 +17,40 @@ module Dhun
         if files.empty?
           result = Result.new :error, "No Results Found"
         else
+          @player.play_files files
           result = Result.new :success, "#{files.size} files queued for playing",
                               :files => files
-          @player.play_files files
         end
       else
           result = Result.new :error, "Invalid query syntax. See dhun -h for correct syntax"                              
       end
+      result.to_json
+    end
+
+    def enqueue(*args)
+      @player = Player.instance
+      q = Query.new(args.join(" "))
+      if q.is_valid?
+        files = q.execute_spotlight_query
+        if files.empty?
+          result = Result.new :error, "No Results Found"
+        else
+          @player.enqueue files
+          result = Result.new :success, "#{files.size} files queued for playing.",
+                              :files => files
+        end
+      else
+          result = Result.new :error, "Invalid query syntax. See dhun -h for correct syntax"                              
+      end
+      result.to_json
+    end
+
+    def status
+      @player = Player.instance
+      status_msg = (@player.status == :playing) ? "Dhun is running" : "Dhun is paused"
+      now_playing = @player.current
+      queue = @player.queue
+      result = Result.new :success, status_msg, :now_playing => now_playing, :queue => queue
       result.to_json
     end
     

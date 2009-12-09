@@ -39,11 +39,39 @@ module Dhun
       when true
         puts resp[:message]
         # Print list of files
-        resp[:files].each do |f|
-          puts f
-        end
+        print_list resp[:files]
       else
         puts resp[:message]
+      end
+    end
+
+    def enqueue(*args)
+      resp = get_json_response("enqueue",args)
+      return unless resp
+      # Process response
+      case resp.success?
+      when true
+        puts resp[:message]
+        # Print list of files
+        print_list resp[:files]
+      else
+        puts resp[:message]
+      end
+    end
+
+    def status
+      resp = get_json_response("status")
+      return unless resp
+      puts resp[:message]
+      if resp.success?
+        now_playing = resp[:now_playing]
+        queue = resp[:queue]
+        puts "Now playing #{now_playing}" if now_playing
+        if queue.empty? 
+          puts "Queue is empty" 
+        else 
+          print_list(queue)
+        end
       end
     end
 
@@ -62,6 +90,7 @@ module Dhun
       puts resp[:message] if resp
     end
 
+
     protected
     def send_command(command,arguments=[])
       cmd = { "command" => command, "arguments" => arguments }.to_json
@@ -78,6 +107,10 @@ module Dhun
         puts $!
         return nil
       end
+    end
+
+    def print_list(list)
+      list.each { |item| puts item }
     end
   end
 end
