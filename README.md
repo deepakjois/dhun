@@ -15,7 +15,8 @@ It uses Spotlight to search for audio files on your computer and play them.
 
 Run the following commands to install Dhun. This will download the latest gem
 from [http://gemcutter.org](http://gemcutter.org), compile the extensions and
-put the binaries in the right place.
+put the binaries in the right place. You will need to have XCode installed for
+the `gem` command to compile the native extensions.
 
     $ gem sources -a http://gemcutter.org
     $ gem install dhun
