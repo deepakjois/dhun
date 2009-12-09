@@ -30,10 +30,9 @@ void notificationCallback(CFNotificationCenterRef  center,
         //attributes = MDItemCopyAttributes(itemRef, attributeNames);
         attrName = CFStringCreateWithCString(NULL,
                                              "kMDItemPath", encoding);
-        attrValue = MDItemCopyAttribute(itemRef, attrName);
-        const char* convertedString =  CFStringGetCStringPtr((CFStringRef)attrValue, encoding);
-        queryResults.files[idx] = malloc(strlen(convertedString)+1);
-        strcpy(queryResults.files[idx],convertedString);
+        attrValue = MDItemCopyAttribute(itemRef, attrName);        
+        queryResults.files[idx] = malloc(1000);
+        CFStringGetCString((CFStringRef)attrValue, queryResults.files[idx],1000,encoding);
         //CFShow(attrValue);
         //CFRelease(attributes);
         //CFRelease(attributeNames);
