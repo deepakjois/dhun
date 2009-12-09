@@ -1,5 +1,3 @@
-* Gem files
-
 TODO
 ====
 

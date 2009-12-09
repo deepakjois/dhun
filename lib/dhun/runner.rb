@@ -46,6 +46,8 @@ Usage:
    dhun enqueue rahman
    dhun status
    dhun stop
+   
+   For more details see README at http://github.com/deepakjois/dhun
 EOF
         opts.separator ""
         opts.separator "Options:"
