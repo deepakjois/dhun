@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'dhun'
-  s.version = '0.5.0'
+  s.version = '0.5.1'
   s.summary = "Minimalist music for OS X"
   s.date = '2009-12-08'
   s.email = 'deepak.jois@gmail.com'
@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
     Rakefile
     TODO.md
     bin/dhun
+    dhun.gemspec
     ext/Makefile
     ext/dhun.h
     ext/dhun_ext.c
