@@ -27,6 +27,7 @@ module Dhun
       @options = {
         :socket => "/tmp/dhun.sock",
         :pid    => 'tmp/pids/dhun.pid',
+        :daemonize => false
       }
       parse!
     end
@@ -52,6 +53,7 @@ EOF
         opts.separator ""
         opts.separator "Options:"
         opts.on_tail("-h", "--help", "Show this message")  { puts opts; exit }
+        opts.on("-d", "--daemonize", "Run daemonized in the background")              { @options[:daemonize] = true }
       end
     end
     
