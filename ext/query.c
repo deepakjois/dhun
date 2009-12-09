@@ -32,7 +32,7 @@ void notificationCallback(CFNotificationCenterRef  center,
                                              "kMDItemPath", encoding);
         attrValue = MDItemCopyAttribute(itemRef, attrName);        
         queryResults.files[idx] = malloc(1000);
-        CFStringGetCString((CFStringRef)attrValue, queryResults.files[idx],1000,encoding);
+        CFStringGetCString((CFStringRef)attrValue, queryResults.files[idx],1000, kCFStringEncodingUTF8);
         //CFShow(attrValue);
         //CFRelease(attributes);
         //CFRelease(attributeNames);
