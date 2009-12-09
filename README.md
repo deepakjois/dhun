@@ -126,3 +126,7 @@ And someday..
 
 * iTunes integration
 * Displaying IDv3 information instead of just file names
+
+## Feedback
+
+email me at deepak DOT jois AT gmail DOT com
