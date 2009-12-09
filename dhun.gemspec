@@ -1,11 +1,13 @@
 Gem::Specification.new do |s|
   s.name = 'dhun'
-  s.version = '0.5.1'
+  s.version = '0.5.2'
   s.summary = "Minimalist music for OS X"
   s.date = '2009-12-08'
   s.email = 'deepak.jois@gmail.com'
   s.homepage = 'http://github.com/deepakjois/dhun'
   s.has_rdoc = false
+  s.add_dependency('eventmachine', '>=0.12.10')
+  s.add_dependency('json_pure', '>=1.2.0')
   s.authors = ["Deepak Jois"]
   # = MANIFEST =
   s.files = %w[
