@@ -35,7 +35,7 @@ I have implemented some logging capabilities.
 Dhun uses Spotlight to query for music files. Just specify a keyword, and Dhun
 will look for files matching that keyword and start playing them
 
-    $ dhun play
+    $ dhun play here
     9 files queued for playing
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/01 40 Day Dream.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
