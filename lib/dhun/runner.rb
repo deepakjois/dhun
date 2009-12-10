@@ -50,12 +50,6 @@ Usage:
    For more details see README at http://github.com/deepakjois/dhun
 EOF
         opts.separator ""
-        opts.separator "Server options:"
-        opts.on("-d", "--daemonize", "Run daemonized in the background")              { @options[:daemonize] = true }
-        opts.on("-l", "--log FILE", "File to redirect output " + "(default: #{@options[:log]})") { |file| @options[:log] = file }
-
-
-        opts.separator ""
         opts.separator "Common options:"
         opts.on_tail("-h", "--help", "Show this message")  { puts opts; exit }
         opts.on_tail("-D", "--debug", "Set debugging on")                               { @options[:debug] = true }
