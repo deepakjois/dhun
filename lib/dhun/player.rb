@@ -47,6 +47,7 @@ module Dhun
           DhunExt.play_file @current
         end
         @status = :stopped
+        @current = nil
         logger.log "Player is stopped"
       end
     end
