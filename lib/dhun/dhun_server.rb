@@ -7,32 +7,34 @@ module Dhun
     end
 
     def receive_data data
+      @logger ||= Logger.instance
       begin
-       puts data
+       @logger.debug data
        cmd = JSON.parse(data)
        @command = cmd["command"]
        @arguments = cmd["arguments"]
        handle_client_request
       rescue StandardError => ex
-        puts "Error parsing command : #{ex.message}"
-        puts ex.backtrace
+        @logger.log "Error parsing command : #{ex.message}"
+        @logger.log ex.backtrace
       ensure
         close_connection true
       end
     end
 
     def handle_client_request
+      @logger ||= Logger.instance
       handler = Handler.new
       begin
         if @command.nil?
           raise "Command Not Found"
         end
         result = handler.send(@command,*@arguments)
-        puts "Sending #{result}"
+        @logger.debug "Sending #{result}"
         send_data result
       rescue StandardError => ex
-        puts "-- error : #{ex.message}"
-        puts ex.backtrace
+        @logger.log "-- error : #{ex.message}"
+        @logger.log ex.backtrace
       end
     end
 

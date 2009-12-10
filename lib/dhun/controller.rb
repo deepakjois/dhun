@@ -2,10 +2,11 @@ require 'json'
 module Dhun
   class Controller
 
-    attr_accessor :options
+    attr_accessor :options,:logger
     
     def initialize(options)
       @options = options
+      @logger = Logger.instance
     end
 
     def start
@@ -104,7 +105,7 @@ module Dhun
          return Result.from_json_str(resp)
       rescue 
         puts "Invalid Response From Server"
-        puts $!
+        logger.debug $!
         return nil
       end
     end

@@ -8,8 +8,11 @@ module Dhun
     attr_reader :status
     attr_reader :current
 
+    attr_reader :logger
+
     def initialize
       @queue = []
+      @logger = Logger.instance
     end
 
     def empty_queue
@@ -20,7 +23,7 @@ module Dhun
     
     def play_files(files)
       if files.empty?
-        puts "Empty List"
+        logger.log "Empty Queue"
       else
         stop
         empty_queue
@@ -40,11 +43,11 @@ module Dhun
       @player_thread = Thread.new do
         while  @status == :playing and !queue.empty?          
           @current = @queue.shift
-          puts "playing #{@current}"
+          logger.log "Playing #{@current}"
           DhunExt.play_file @current
         end
         @status = :stopped
-        puts "Player is stopped"
+        logger.log "Player is stopped"
       end
     end
 

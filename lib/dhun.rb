@@ -1,6 +1,6 @@
 module Dhun
   VERSION = '0.5.3'
-  
+
   autoload :Runner, 'dhun/runner'
   autoload :Controller, 'dhun/controller'
   autoload :Server, 'dhun/server'
@@ -10,4 +10,5 @@ module Dhun
   autoload :Player, 'dhun/player'
   autoload :Query, 'dhun/query'
   autoload :Result, 'dhun/result'
+  autoload :Logger, 'dhun/logger'
 end

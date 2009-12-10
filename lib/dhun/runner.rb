@@ -26,8 +26,7 @@ module Dhun
       # Default options values
       @options = {
         :socket => "/tmp/dhun.sock",
-        :pid    => 'tmp/pids/dhun.pid',
-        :daemonize => false
+        :log       => "/tmp/dhun.log"
       }
       parse!
     end
@@ -51,9 +50,18 @@ Usage:
    For more details see README at http://github.com/deepakjois/dhun
 EOF
         opts.separator ""
-        opts.separator "Options:"
-        opts.on_tail("-h", "--help", "Show this message")  { puts opts; exit }
+        opts.separator "Server options:"
         opts.on("-d", "--daemonize", "Run daemonized in the background")              { @options[:daemonize] = true }
+        opts.on("-l", "--log FILE", "File to redirect output " + "(default: #{@options[:log]})") { |file| @options[:log] = file }
+
+
+        opts.separator ""
+        opts.separator "Common options:"
+        opts.on_tail("-h", "--help", "Show this message")  { puts opts; exit }
+        opts.on_tail("-D", "--debug", "Set debugging on")                               { @options[:debug] = true }
+        opts.on_tail("-h", "--help", "Show this message")                               { puts opts; exit }
+        opts.on_tail('-v', '--version', "Show version")                                 { puts "Dhun " + Dhun::VERSION; exit }
+        
       end
     end
     
@@ -66,6 +74,8 @@ EOF
     # Parse the current shell arguments and run the command.
     # Exits on error.
     def run!
+      logger = Logger.instance
+      logger.log_level = :debug if @options[:debug]
       if self.class.commands.include?(@command)
         if CLIENT_COMMANDS.include?(@command)
            unless DhunClient.is_dhun_server_running?(@options[:socket])
