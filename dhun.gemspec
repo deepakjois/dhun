@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.name = 'dhun'
   s.version = '0.5.3'
   s.summary = "Minimalist music player for OS X"
-  s.date = '2009-12-08'
+  s.date = '2009-12-09'
   s.email = 'deepak.jois@gmail.com'
   s.homepage = 'http://github.com/deepakjois/dhun'
   s.has_rdoc = false
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     lib/dhun/dhun_client.rb
     lib/dhun/dhun_server.rb
     lib/dhun/handler.rb
+    lib/dhun/logger.rb
     lib/dhun/player.rb
     lib/dhun/query.rb
     lib/dhun/result.rb
