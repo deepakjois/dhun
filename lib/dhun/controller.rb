@@ -91,6 +91,19 @@ module Dhun
       puts resp[:message] if resp
     end
 
+    def shuffle
+      resp = get_json_response("shuffle")
+      return unless resp
+      # Process response
+      case resp.success?
+      when true
+        puts resp[:message]
+        # Print list of files
+        print_list resp[:queue]
+      else
+        puts resp[:message]
+      end
+    end
 
     protected
     def send_command(command,arguments=[])

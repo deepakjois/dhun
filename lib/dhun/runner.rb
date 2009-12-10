@@ -5,7 +5,7 @@ module Dhun
   # Heavily lifted from Thin codebase
   class Runner
     COMMANDS = %w(start query)
-    CLIENT_COMMANDS = %w(stop play pause resume next enqueue status)
+    CLIENT_COMMANDS = %w(stop play pause resume next enqueue status shuffle)
     # Parsed options
     attr_accessor :options
     
@@ -45,6 +45,7 @@ Usage:
    dhun resume
    dhun enqueue rahman
    dhun status
+   dhun shuffle
    dhun stop
    
    For more details see README at http://github.com/deepakjois/dhun

@@ -65,5 +65,12 @@ module Dhun
       play # start playing with the next track
       return next_track
     end
+
+    def shuffle
+      return if @queue.empty?
+      s = @queue.size
+      s.downto(1) { |n| @queue.push @queue.delete_at(rand(n)) }
+      logger.debug @queue
+    end
   end
 end

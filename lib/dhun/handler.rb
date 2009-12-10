@@ -76,5 +76,16 @@ module Dhun
       result = Result.new :success,  (track ? "Dhun is playing #{track}" : "No more tracks in queue.")
       return result.to_json
     end
+
+    def shuffle
+      @player = Player.instance
+      @player.shuffle
+      if @player.queue.empty?
+        result = Result.new :error, "Queue is empty"
+      else
+        result = Result.new :success, "Queue is shuffled", :queue => @player.queue
+      end
+      return result.to_json
+    end
   end
 end
