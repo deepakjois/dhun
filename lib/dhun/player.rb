@@ -39,7 +39,7 @@ module Dhun
     end
 
     def play
-      return if @status == :playing
+      return unless self.status == :stopped
       @status = :playing
       @player_thread = Thread.new do
         while  @status == :playing and !queue.empty?          
