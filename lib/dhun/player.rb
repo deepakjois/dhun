@@ -47,15 +47,29 @@ module Dhun
           DhunExt.play_file @current
         end
         @status = :stopped
+        logger.log "Finished playing #{@current}"
         @current = nil
-        logger.log "Player is stopped"
+      end
+    end
+
+    def pause
+      if @status == :playing
+        @status = :paused
+        DhunExt.pause
+      end
+    end
+
+    def resume
+      if @status == :paused
+        @status = :playing
+        DhunExt.resume
       end
     end
 
     def stop
       @status = :stopped
       @current = nil
-      DhunExt.pause_play
+      DhunExt.stop
       # Wait for @player_thread to exit cleanly
       @player_thread.join unless @player_thread.nil?
     end

@@ -47,7 +47,11 @@ module Dhun
 
     def status
       @player = Player.instance
-      status_msg = (@player.status == :playing) ? "Dhun is running" : "Dhun is paused"
+      status_msg = case @player.status
+                   when :playing then "Dhun is running" 
+                   when :paused  then "Dhun is paused"
+                   when :stopped then "Dhun is stopped"
+                   end
       now_playing = @player.current
       queue = @player.queue
       result = Result.new :success, status_msg, :now_playing => now_playing, :queue => queue
@@ -63,17 +67,25 @@ module Dhun
 
     def pause
       @player = Player.instance
-      @player.stop
-      track = @player.queue.first
-      result = Result.new :success, "Dhun is paused. " + (track ? "Next track is #{track}" : "No more tracks in queue.")
+      @player.pause
+      case @player.status 
+      when :paused
+        result = Result.new :success, "Dhun is paused at #{@player.current}"
+      when :stopped
+        result = Result.new :error, "Dhun is already stopped"
+      end
       return result.to_json
     end
 
     def resume
       @player = Player.instance
-      track = @player.queue.first
-      @player.play
-      result = Result.new :success,  (track ? "Dhun is playing #{track}" : "No more tracks in queue.")
+      @player.resume
+      case @player.status
+      when :playing
+        result = Result.new :success, "Dhun is playing #{@player.current}"
+      when :stopped
+        result = Result.new :error, "Dhun is already stopped"
+      end
       return result.to_json
     end
 

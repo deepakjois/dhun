@@ -18,17 +18,22 @@ static pthread_t       posixThreadID;
 void Init_dhunruby();
 
 static VALUE method_play_file(VALUE self, VALUE fileName);
-static VALUE method_pause_play(VALUE self);
+static VALUE method_stop_play(VALUE self);
 static VALUE method_query_spotlight(VALUE self, VALUE query);
 static VALUE method_is_playing(VALUE self);
+static VALUE method_pause_play(VALUE self);
+static VALUE method_resume_play(VALUE self);
 
 // The initialization method for this module
 void Init_dhun_ext() {
   DhunExt = rb_define_class("DhunExt", rb_cObject);
   rb_define_singleton_method(DhunExt, "play_file", method_play_file, 1);
   rb_define_singleton_method(DhunExt, "query_spotlight", method_query_spotlight, 1);
-  rb_define_singleton_method(DhunExt, "pause_play", method_pause_play, 0);
+  rb_define_singleton_method(DhunExt, "stop", method_stop_play, 0);
   rb_define_singleton_method(DhunExt, "is_playing?", method_is_playing, 0);
+
+  rb_define_singleton_method(DhunExt, "pause",  method_pause_play,0);
+  rb_define_singleton_method(DhunExt, "resume", method_resume_play,0);
 }
 
 static VALUE method_play_file(VALUE self, VALUE filename) {
@@ -51,6 +56,18 @@ static VALUE method_play_file(VALUE self, VALUE filename) {
 }
 
 static VALUE method_pause_play(VALUE self) {
+  if (aqData.mIsRunning == true)
+    AudioQueuePause(aqData.mQueue);
+  return Qnil;
+}
+
+static VALUE method_resume_play(VALUE self) {
+  if (aqData.mIsRunning == true)
+    AudioQueueStart(aqData.mQueue,NULL);
+  return Qnil;
+}
+
+static VALUE method_stop_play(VALUE self) {
   aqData.mIsRunning = false;
   return Qnil;
 }
