@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.has_rdoc = false
   s.add_dependency('eventmachine', '>=0.12.10')
   s.add_dependency('json_pure', '>=1.2.0')
+  s.add_dependency('daemons', '>=1.0.10')
   s.authors = ["Deepak Jois"]
   # = MANIFEST =
   s.files = %w[

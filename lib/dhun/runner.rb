@@ -8,13 +8,13 @@ module Dhun
     CLIENT_COMMANDS = %w(stop play pause resume next enqueue status shuffle)
     # Parsed options
     attr_accessor :options
-    
+
     # Name of the command to be runned.
     attr_accessor :command
-    
+
     # Arguments to be passed to the command.
     attr_accessor :arguments
-    
+
     # Return all available commands
     def self.commands
       commands  = COMMANDS + CLIENT_COMMANDS
@@ -26,7 +26,7 @@ module Dhun
       # Default options values
       @options = {
         :socket => "/tmp/dhun.sock",
-        :log       => "/tmp/dhun.log"
+        :default_log       => "/tmp/dhun.log"
       }
       parse!
     end
@@ -37,7 +37,7 @@ module Dhun
       # +option+ keys are used to build the command line to launch other processes,
       # see <tt>lib/dhun/command.rb</tt>.
       @parser ||= OptionParser.new do |opts|
-        opts.banner =  <<-EOF 
+        opts.banner =  <<-EOF
 Usage:
    dhun start
    dhun play spirit
@@ -47,19 +47,23 @@ Usage:
    dhun status
    dhun shuffle
    dhun stop
-   
+
    For more details see README at http://github.com/deepakjois/dhun
 EOF
         opts.separator ""
+        opts.on("-d", "--daemonize", "Run daemonized in the background")                { @options[:daemonize] = true }
+        opts.on("-l", "--log FILE", "File to redirect output " +
+                                      "(default: #{@options[:default_log]})")                   { |file| @options[:log] = file }
+
         opts.separator "Common options:"
         opts.on_tail("-h", "--help", "Show this message")  { puts opts; exit }
         opts.on_tail("-D", "--debug", "Set debugging on")                               { @options[:debug] = true }
         opts.on_tail("-h", "--help", "Show this message")                               { puts opts; exit }
         opts.on_tail('-v', '--version', "Show version")                                 { puts "Dhun " + Dhun::VERSION; exit }
-        
+
       end
     end
-    
+
     def parse!
       parser.parse! @argv
       @command   = @argv.shift
@@ -82,7 +86,7 @@ EOF
       elsif @command.nil?
         puts "Command required"
         puts @parser
-        exit 1  
+        exit 1
       else
         abort "Unknown command: #{@command}. Use one of #{self.class.commands.join(', ')}"
       end

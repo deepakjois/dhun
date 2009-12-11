@@ -1,4 +1,5 @@
 require 'eventmachine'
+require 'daemons'
 module Dhun
   class Server
     
@@ -12,6 +13,14 @@ module Dhun
     end
 
     def start
+      if @options[:daemonize]
+         logger.log "Starting Dhun"
+        exit if fork
+        Process.setsid
+        log_file = @options[:log] || @options[:default_log]
+        exec("#{ENV['_']} start -l #{log_file} #{@options[:debug] ? "-D" : ""}")
+      end
+      logger.file = @options[:log] if @options[:log]
       logger.log "Starting Dhun"
       at_exit { remove_socket_file }
       EventMachine::run {
