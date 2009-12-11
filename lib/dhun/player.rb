@@ -13,6 +13,7 @@ module Dhun
     def initialize
       @queue = []
       @logger = Logger.instance
+      @status = :stopped
     end
 
     def empty_queue
