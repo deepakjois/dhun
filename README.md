@@ -26,7 +26,8 @@ the `gem` command to compile the native extensions.
     $ dhun start
     Starting Dhun
 
-Pass the `-d` option to run the server as a daemon in the background.
+Pass the `-d` option to run the server as a daemon in the background. See
+`dhun -h` for more options.
 
 ### Playing Files
 
