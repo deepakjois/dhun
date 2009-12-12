@@ -69,7 +69,7 @@ enclose the argument in double quotes, like `dhun query "artist:akli d"`
 
 When you are ready to play the files, pass the query to the `play` command.
 Note that the `play` command will remove anything that may be already there on
-your queue. To add files, use `enqueue`.
+your queue. To append files to queue, use `enqueue`.
 
     $ dhun play here
     3 files queued for playing
@@ -108,8 +108,7 @@ Status
     /Users/deepak/Dropbox/shared/music/Here Comes/01 - 40 Day Dream.mp3
     /Users/deepak/Dropbox/shared/music/Here Comes/03 - Carries On.mp3
 
-Enqueuing more files. Note that `dhun play` will empty the current queue
-before adding new files.
+Enqueuing more files.
 
     $ dhun enqueue chup
     1 files queued for playing.
