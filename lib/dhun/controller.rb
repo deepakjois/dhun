@@ -23,7 +23,7 @@ module Dhun
     end
     
     def query(*args)
-      q = Query.new(args.join(' '))
+      q = Query.new(args)
       if q.is_valid?
         files = q.execute_spotlight_query
         puts(files.empty? ? "No Results Found" : "#{files.size} Results\n" + files.join("\n"))
@@ -112,7 +112,7 @@ module Dhun
       resp = client.send(cmd)
     end
 
-    def get_json_response(command,*args)
+    def get_json_response(command,args=[])
       begin 
          resp = send_command(command,args)
          return Result.from_json_str(resp)

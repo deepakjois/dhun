@@ -11,7 +11,7 @@ module Dhun
     
     def play(*args)
       @player = Player.instance
-      q = Query.new(args.join(" "))
+      q = Query.new(args)
       if q.is_valid?
         files = q.execute_spotlight_query
         if files.empty?

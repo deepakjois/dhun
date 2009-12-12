@@ -29,42 +29,53 @@ the `gem` command to compile the native extensions.
 Pass the `-d` option to run the server as a daemon in the background. See
 `dhun -h` for more options.
 
-### Playing Files
+
+### Querying for files
 
 Dhun uses Spotlight to query for music files. Just specify a keyword, and Dhun
 will look for files matching that keyword and start playing them.
 
-You can also query the Spotlight database before playing the files.
+You can also query the Spotlight database before playing the files, with the 
+`query` command.
 
     $ dhun query here
-    9 Results
+    3 Results
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/01 40 Day Dream.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/01 - 40 Day Dream.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/02 - Janglin.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/03 - Carries On.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/02 - Janglin.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/01 - 40 Day Dream.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/03 - Carries On.mp3
 
-And then, when you are ready to play the files. Note that the `play` command
-will remove anything that may be already there on your queue. To add files,
-use `enqueue`.
+You can use query filters like `album:sid` or `artist:rahman`. Currently
+`album`, `artist`, `title`, `genre` and `file` filters are supported. 
+
+    $ dhun query genre:world album:gypsy
+    5 results
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 11 - Eastenders - Vino Iubirea Mea (!DelaDap Remix) (Germany).mp3
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 10 - Luminescent Orchestrii - Amari Szi, Amari (Amon Remix)  (USA).mp3
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 09 - Kistehén Tánczenekar - Virágok a Réten (Romano Drom Remix) (Hungary).mp3
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 08 - Anselmo Crew - Süt Ictim Dilim Yandi (Hungary).mp3
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 07 - Magnifico & Turbolentza - Zh Ne Sui Pa Pur Tua (Slovenia).mp3
+
+You can even mix the filters with a regular query like.
+
+    $ dhun query genre:world album:gypsy Czech
+    2 Results
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 01 - !DelaDap - Zsa Manca (Czech Republic-Hungary).mp3
+    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 03 - Gipsy.cz - Jednou (Czech Republic).mp3
+
+Note that if you want to pass filters longer than a word, you will need to
+enclose the argument in double quotes, like `dhun query "artist:akli d"`
+
+### Playing Files
+
+When you are ready to play the files, pass the query to the `play` command.
+Note that the `play` command will remove anything that may be already there on
+your queue. To add files, use `enqueue`.
 
     $ dhun play here
-    9 files queued for playing
+    3 files queued for playing
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/01 40 Day Dream.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/01 - 40 Day Dream.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/02 - Janglin.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/03 - Carries On.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/02 - Janglin.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/01 - 40 Day Dream.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/03 - Carries On.mp3
-
-More advanced querying support is coming soon.
 
 ### Controlling Playback
 
@@ -116,7 +127,6 @@ These features are planned in the next few releases
 
 * Playing previous song, using something like `dhun prev`
 * Skipping ahead by more than one file, like `dhun next 2` or `dhun prev 2`
-* Advanced querying support with filters, like `dhun play "artist:Rahman"`
 
 And someday..
 
