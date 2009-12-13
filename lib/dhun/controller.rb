@@ -23,6 +23,7 @@ module Dhun
     end
     
     def query(*args)
+      abort_if_empty_args(args)
       q = Query.new(args)
       if q.is_valid?
         files = q.execute_spotlight_query
@@ -33,6 +34,7 @@ module Dhun
     end
 
     def play(*args)
+      abort_if_empty_args(args)
       resp = get_json_response("play", args)
       return unless resp
       # Process response
@@ -47,6 +49,7 @@ module Dhun
     end
 
     def enqueue(*args)
+      abort_if_empty_args(args)
       resp = get_json_response("enqueue",args)
       return unless resp
       # Process response
@@ -121,6 +124,10 @@ module Dhun
         logger.debug $!
         return nil
       end
+    end
+
+    def abort_if_empty_args(args)
+      abort "You must pass in atleast one argument" if args.empty? 
     end
 
     def print_list(list)
