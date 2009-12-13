@@ -1,5 +1,5 @@
 require 'dhun_ext'
-require 'erb'
+
 module Dhun
   class Query
 
@@ -36,8 +36,11 @@ module Dhun
            end.join(" && ")
 
 
-      template = ERB.new(mappings.collect { |key| "#{key} == '<%= keyword %>'wc" }.join(" || "))
-      sq = strings.collect { |keyword|  "(" + template.result(binding) + ")"  }.join(" && ")
+      template = "%s == '%s'wc"
+      sq = strings.collect do |keyword|
+        q = mappings.collect { |key|  template % [key,keyword]  }.join(" || ")
+        "( #{q} )"
+      end.join(" && ")
 
       @spotlight_query = ["kMDItemContentTypeTree == 'public.audio'", fq, sq].select { |s| s.length > 0 }.join(" && ")
       Logger.instance.debug @spotlight_query
