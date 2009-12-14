@@ -94,7 +94,11 @@ EOF
 
     def run_command
       controller = Controller.new(@options)
-      controller.send(@command,*@arguments)
+      begin
+        controller.send(@command,*@arguments)
+      rescue ArgumentError
+        abort "Illegal arguments passed to #{@command}"
+      end
     end
   end
 end
