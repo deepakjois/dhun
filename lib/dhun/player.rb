@@ -5,6 +5,7 @@ module Dhun
     include Singleton
 
     attr_reader :queue
+    attr_reader :history
     attr_reader :status
     attr_reader :current
 
@@ -12,6 +13,7 @@ module Dhun
 
     def initialize
       @queue = []
+      @history = []
       @logger = Logger.instance
       @status = :stopped
     end
@@ -46,6 +48,7 @@ module Dhun
           @current = @queue.shift
           logger.log "Playing #{@current}"
           DhunExt.play_file @current
+          @history.unshift @current
         end
         @status = :stopped
         logger.log "Finished playing #{@current}"
@@ -69,13 +72,14 @@ module Dhun
 
     def stop
       @status = :stopped
-      @current = nil
       DhunExt.stop
       # Wait for @player_thread to exit cleanly
       @player_thread.join unless @player_thread.nil?
+      logger.debug "Stopped"
     end
 
     def next
+      logger.debug "Switching to next"
       stop # stops current track
       next_track = @queue.first
       play # start playing with the next track

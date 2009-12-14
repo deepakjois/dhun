@@ -57,6 +57,13 @@ module Dhun
       result = Result.new :success, status_msg, :now_playing => now_playing, :queue => queue
       result.to_json
     end
+
+    def history
+      @player = Player.instance
+      status_msg = @player.history.empty? ? "No files in history" : "#{@player.history.size} files in history"
+      result = Result.new :success, status_msg, :history => @player.history
+      result.to_json
+    end
     
     def next(*args)
       @player = Player.instance

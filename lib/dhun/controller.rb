@@ -79,6 +79,13 @@ module Dhun
       end
     end
 
+    def history
+      resp = get_json_response("history")
+      return unless resp
+      puts resp[:message]
+      print_list(resp[:history]) unless resp[:history].empty?
+    end
+
     def next(*args)
       resp = get_json_response("next")
       puts resp[:message] if resp
