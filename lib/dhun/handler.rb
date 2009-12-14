@@ -5,7 +5,7 @@ module Dhun
     def stop
       result = Result.new :success, "Dhun is stopping"
       Server.stop
-      Player.instance.pause
+      Player.instance.stop
       return result.to_json
     end
     
