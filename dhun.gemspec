@@ -1,8 +1,8 @@
 Gem::Specification.new do |s|
   s.name = 'dhun'
-  s.version = '0.5.4'
+  s.version = '0.5.5'
   s.summary = "Minimalist music player for OS X"
-  s.date = '2009-12-10'
+  s.date = '2009-12-14'
   s.email = 'deepak.jois@gmail.com'
   s.homepage = 'http://github.com/deepakjois/dhun'
   s.has_rdoc = false
