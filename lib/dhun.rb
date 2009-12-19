@@ -1,5 +1,5 @@
 module Dhun
-  VERSION = '0.5.5'
+  VERSION = '0.5.6'
 
   autoload :Runner, 'dhun/runner'
   autoload :Controller, 'dhun/controller'
