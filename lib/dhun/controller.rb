@@ -3,7 +3,7 @@ module Dhun
   class Controller
 
     attr_accessor :options,:logger
-    
+
     def initialize(options)
       @options = options
       @logger = Logger.instance
@@ -17,11 +17,11 @@ module Dhun
         server.start
       end
     end
-    
+
     def stop
       send_command("stop")
     end
-    
+
     def query(*args)
       abort_if_empty_args(args)
       q = Query.new(args)
@@ -71,9 +71,9 @@ module Dhun
         now_playing = resp[:now_playing]
         queue = resp[:queue]
         puts "Now playing #{now_playing}" if now_playing
-        if queue.empty? 
-          puts "Queue is empty" 
-        else 
+        if queue.empty?
+          puts "Queue is empty"
+        else
           print_list(queue)
         end
       end
@@ -86,10 +86,26 @@ module Dhun
       print_list(resp[:history]) unless resp[:history].empty?
     end
 
-    def next(*args)
-      resp = get_json_response("next")
+    def next(skip_length=1)
+      begin
+        skip_length = Integer(skip_length)
+      rescue ArgumentError => ex # Not a valid integer
+        abort ex.message
+      end
+      resp = get_json_response("next",[skip_length])
       puts resp[:message] if resp
     end
+
+    def prev(skip_length=1)
+      begin
+        skip_length = Integer(skip_length)
+      rescue ArgumentError => ex # Not a valid integer
+        abort ex.message
+      end
+      resp = get_json_response("prev",[skip_length])
+      puts resp[:message] if resp
+    end
+
 
     def pause
       resp = get_json_response("pause")
@@ -123,10 +139,10 @@ module Dhun
     end
 
     def get_json_response(command,args=[])
-      begin 
+      begin
          resp = send_command(command,args)
          return Result.from_json_str(resp)
-      rescue 
+      rescue
         puts "Invalid Response From Server"
         logger.debug $!
         return nil
@@ -134,7 +150,7 @@ module Dhun
     end
 
     def abort_if_empty_args(args)
-      abort "You must pass in atleast one argument" if args.empty? 
+      abort "You must pass in atleast one argument" if args.empty?
     end
 
     def print_list(list)

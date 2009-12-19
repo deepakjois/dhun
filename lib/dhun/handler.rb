@@ -50,7 +50,7 @@ module Dhun
       status_msg = case @player.status
                    when :playing then "Dhun is running" 
                    when :paused  then "Dhun is paused"
-                   when :stopped then "Dhun is stopped"
+                   when :stopped then "Dhun has stopped"
                    end
       now_playing = @player.current
       queue = @player.queue
@@ -65,10 +65,19 @@ module Dhun
       result.to_json
     end
     
-    def next(*args)
+    def next(skip_length=1)
       @player = Player.instance
-      next_track = @player.next
-      result = Result.new :success, (next_track ?  "Dhun is playing #{next_track}" : "No More Tracks")
+      next_track = @player.next skip_length
+      msg = next_track ?  "Dhun is playing #{next_track}" : "Not enough tracks in queue"
+      result = Result.new :success, msg
+      return result.to_json
+    end
+
+    def prev(skip_length=1)
+      @player = Player.instance
+      prev_track = @player.prev skip_length
+      msg = prev_track ?  "Dhun is playing #{prev_track}" : "Not enough tracks in history"
+      result = Result.new :success, msg
       return result.to_json
     end
 
@@ -79,7 +88,7 @@ module Dhun
       when :paused
         result = Result.new :success, "Dhun is paused at #{@player.current}"
       when :stopped
-        result = Result.new :error, "Dhun is already stopped"
+        result = Result.new :error, "Dhun has already stopped"
       end
       return result.to_json
     end
@@ -91,7 +100,7 @@ module Dhun
       when :playing
         result = Result.new :success, "Dhun is playing #{@player.current}"
       when :stopped
-        result = Result.new :error, "Dhun is already stopped"
+        result = Result.new :error, "Dhun has already stopped"
       end
       return result.to_json
     end

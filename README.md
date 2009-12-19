@@ -76,6 +76,13 @@ your queue. To append files to queue, use `enqueue`.
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/01 40 Day Dream.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
     /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
+    
+Enqueuing more files.
+
+    $ dhun enqueue chup
+    1 files queued for playing.
+    /Users/deepak/Dropbox/shared/music/Coke Studio/Chup.mp3
+    
 
 ### Controlling Playback
 
@@ -94,6 +101,27 @@ Skipping to next file
     $ dhun next
     Dhun is playing /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
 
+You can use a numeric argument to specify the number of tracks to skip ahead,
+like `dhun next 2`.
+
+Skipping to previous file in history.
+
+    $ dhun prev 
+    Dhun is playing /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
+
+You can use a numeric argument to specify the number of tracks to skip ahead,
+like `dhun prev 2`.
+
+Shuffling the queue
+
+    $ dhun shuffle
+    Queue is shuffled
+    /Users/deepak/Dropbox/shared/music/3 idiots/35634_Give Me Some Sunshine.mp3
+    /Users/deepak/Dropbox/shared/music/Aao Wish Karen/35612_Kuch Aisa.mp3
+    /Users/deepak/Dropbox/shared/music/Coke Studio/Jo-Meray.mp3
+
+### Other commands
+
 Status
 
     $ dhun status
@@ -108,11 +136,13 @@ Status
     /Users/deepak/Dropbox/shared/music/Here Comes/01 - 40 Day Dream.mp3
     /Users/deepak/Dropbox/shared/music/Here Comes/03 - Carries On.mp3
 
-Enqueuing more files.
+History
 
-    $ dhun enqueue chup
-    1 files queued for playing.
-    /Users/deepak/Dropbox/shared/music/Coke Studio/Chup.mp3
+    $ dhun history
+    3 files in history
+    /Users/deepak/Dropbox/shared/music/Coke Studio/Bari-Barsi.mp3
+    /Users/deepak/Dropbox/shared/music/Coke Studio/Aankhon-Kay-Sagar.mp3
+    /Users/deepak/Dropbox/shared/music/Coke Studio/Paimona.mp3
 
 ### Stopping Dhun
 
@@ -122,10 +152,11 @@ This will exit the process.
 
 ## Coming Soon
 
-These features are planned in the next few releases
+There are some features planned in the short run. Please file an issue with a
+feature request, if you have one.
 
-* Playing previous song, using something like `dhun prev`
-* Skipping ahead by more than one file, like `dhun next 2` or `dhun prev 2`
+* Saving/Loading playlists
+* Growl Notifications using `growlnotify`
 
 And someday..
 

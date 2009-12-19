@@ -5,7 +5,7 @@ module Dhun
   # Heavily lifted from Thin codebase
   class Runner
     COMMANDS = %w(start query)
-    CLIENT_COMMANDS = %w(stop play pause resume next enqueue status shuffle history)
+    CLIENT_COMMANDS = %w(stop play pause resume next prev enqueue status shuffle history)
     # Parsed options
     attr_accessor :options
 
