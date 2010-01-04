@@ -1,104 +1,45 @@
-require 'optparse'
+require 'thor'
 
 module Dhun
+  
+  class Runner < Thor
+    include Thor::Actions
 
-  # Heavily lifted from Thin codebase
-  class Runner
-    COMMANDS = %w(start query)
-    CLIENT_COMMANDS = %w(stop play pause resume next prev enqueue status shuffle history)
-    # Parsed options
-    attr_accessor :options
-
-    # Name of the command to be runned.
-    attr_accessor :command
-
-    # Arguments to be passed to the command.
-    attr_accessor :arguments
-
-    # Return all available commands
-    def self.commands
-      commands  = COMMANDS + CLIENT_COMMANDS
-      commands
-    end
-
-    def initialize(argv)
-      @argv = argv
-      # Default options values
-      @options = {
+    # overload start method to initialize dhun_options
+    def self.start(given_args=ARGV, config={})
+      @dhun_options = {
         :socket => "/tmp/dhun.sock",
-        :default_log       => "/tmp/dhun.log"
+        :default_log => "/tmp/dhun.log",
+        :debug => false
       }
-      parse!
+      @logger = Dhun::Logger.instance
+      super
     end
 
-    def parser
-      # NOTE: If you add an option here make sure the key in the +options+ hash is the
-      # same as the name of the command line option.
-      # +option+ keys are used to build the command line to launch other processes,
-      # see <tt>lib/dhun/command.rb</tt>.
-      @parser ||= OptionParser.new do |opts|
-        opts.banner =  <<-EOF
-Usage:
-   dhun start
-   dhun play spirit
-   dhun pause
-   dhun resume
-   dhun enqueue rahman
-   dhun status
-   dhun shuffle
-   dhun stop
-
-   For more details see README at http://github.com/deepakjois/dhun
-EOF
-        opts.separator ""
-        opts.on("-d", "--daemonize", "Run daemonized in the background")                { @options[:daemonize] = true }
-        opts.on("-l", "--log FILE", "File to redirect output " +
-                                      "(default: #{@options[:default_log]})")                   { |file| @options[:log] = file }
-
-        opts.separator "Common options:"
-        opts.on_tail("-h", "--help", "Show this message")  { puts opts; exit }
-        opts.on_tail("-D", "--debug", "Set debugging on")                               { @options[:debug] = true }
-        opts.on_tail("-h", "--help", "Show this message")                               { puts opts; exit }
-        opts.on_tail('-v', '--version', "Show version")                                 { puts "Dhun " + Dhun::VERSION; exit }
-
-      end
+    desc "query FILTER", 
+    "query for selected songs via filter. i.e genre:world album:gypsy or regular query like Czech"
+    def query(arguments)
+      run_command(:query,arguments) if server_running?
     end
 
-    def parse!
-      parser.parse! @argv
-      @command   = @argv.shift
-      @arguments = @argv
-    end
+    private
 
-    # Parse the current shell arguments and run the command.
-    # Exits on error.
-    def run!
-      logger = Logger.instance
-      logger.log_level = :debug if @options[:debug]
-      if self.class.commands.include?(@command)
-        if CLIENT_COMMANDS.include?(@command)
-           unless DhunClient.is_dhun_server_running?(@options[:socket])
-             puts "Please start Dhun server first with : dhun start"
-             exit 1
-           end
-        end
-        run_command
-      elsif @command.nil?
-        puts "Command required"
-        puts @parser
-        exit 1
+    # send commands to Controller
+    def run_command(command,arguments)
+      @logger.log_level = :debug if @dhun_options[:debug]
+      Dhun::Controller.new(@dhun_options).send(command,*arguments)
+    end
+    
+    # check to see if Dhun Server is running.
+    # asks to start Dhun server if not
+    def server_running?
+      if Dhun::DhunClient.is_dhun_server_running?(@options[:socket])
+        return true
       else
-        abort "Unknown command: #{@command}. Use one of #{self.class.commands.join(', ')}"
+        say "Please start Dhun server first with : dhun start", :red
+        return false
       end
     end
 
-    def run_command
-      controller = Controller.new(@options)
-      begin
-        controller.send(@command,*@arguments)
-      rescue ArgumentError
-        abort "Illegal arguments passed to #{@command}"
-      end
-    end
   end
 end
