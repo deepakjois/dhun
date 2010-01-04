@@ -25,6 +25,8 @@ context "the Result" do
     should("return an instance of Result") { @result }.kind_of(Dhun::Result)
     should("have result equal success") { @result.success? }
     should("have message equal test") { @result.data[:message] }.equals "test"
+    asserts("Result does not have key 'result'") {  @result.data['result'] }.nil
+    asserts("Result does not have key 'message") {  @result.data['message'] }.nil
   end
 
 end

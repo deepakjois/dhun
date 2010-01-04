@@ -4,8 +4,7 @@ module Dhun
     attr_reader :data
     
     def initialize(result, message, options = {})
-      @data = { :result => result.to_sym, :message => message }
-      @data.merge!(options)
+      @data = { :result => result.to_sym, :message => message }.merge(options)
     end
 
     def success?
@@ -22,7 +21,7 @@ module Dhun
 
     def self.from_json_str(resp_json)
       resp = JSON.parse(resp_json)
-      Result.new(resp["result"],resp["message"],resp)
+      Result.new resp.delete('result'), resp.delete('message'), resp
     end
 
   end
