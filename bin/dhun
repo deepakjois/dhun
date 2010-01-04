@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # Thin command line interface script.
 # Run <tt>dhun -h</tt> to get more usage.
+require 'rubygems'
 $: << File.expand_path(File.dirname(__FILE__) + "/../lib")
 require 'dhun'
-Dhun::Runner.new(ARGV).run!
+Dhun::Runner.start(ARGV)
 

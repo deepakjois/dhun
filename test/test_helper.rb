@@ -1,9 +1,10 @@
+require 'rubygems'
 require 'riot'
+require 'rr'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'dhun'
 
 class Object
-  
   def capture(stream)
     begin
       stream = stream.to_s
@@ -17,3 +18,5 @@ class Object
   end
   
 end
+
+Riot::Situation.instance_eval { include RR::Adapters::RRMethods }

@@ -87,7 +87,6 @@ task :build => "lib/dhun_ext.#{DLEXT}"
 
 desc 'Default task: run all tests'
 task :default => [:test]
-
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
