@@ -1,26 +1,23 @@
 require 'json'
 module Dhun
   class Result
+    attr_reader :data
     
     def initialize(result, message, options = {})
-      @response = { :result => result,:message => message}
-      @response.merge!(options)
+      @data = { :result => result.to_sym, :message => message }
+      @data.merge!(options)
     end
 
     def success?
-      @response[:result].to_sym == :success
+      @data[:result] == :success
     end
 
     def error?
-      @response[:result].to_sym == :error
-    end
-
-    def [](sym)
-      @response[sym] || @response[sym.to_s]
+      @data[:result] == :error
     end
     
     def to_json
-      @response.to_json
+      @data.to_json
     end
 
     def self.from_json_str(resp_json)
