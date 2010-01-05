@@ -4,12 +4,19 @@ module Dhun
   class Query
 
     MD_ITEMS = [:kMDItemAlbum, :kMDItemAuthors, :kMDItemComposer, :kMDItemDisplayName, :kMDItemFSName, :kMDItemTitle, :kMDItemMusicalGenre]
-    MAPPINGS = { "file" => :kMDItemFSName, "album" => :kMDItemAlbum, "artist" => :kMDItemAuthors, "title" => :kMDItemTitle, "genre" => :kMDItemMusicalGenre }
+    MAPPINGS = { 
+      "file" => :kMDItemFSName, 
+      "album" => :kMDItemAlbum, 
+      "artist" => :kMDItemAuthors, 
+      "title" => :kMDItemTitle, 
+      "genre" => :kMDItemMusicalGenre 
+      }
 
-    attr_reader :spotlight_query
+    attr_reader :spotlight_query,:query_args,:is_valid
 
     def initialize(args)
       @query_args = args
+      @is_valid = false
       parse
     end
 
