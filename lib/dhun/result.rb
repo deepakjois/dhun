@@ -15,6 +15,10 @@ module Dhun
       @data[:result] == :error
     end
     
+    def [](sym)
+      @data[sym.to_sym] || @data[sym.to_s]
+    end
+    
     def to_json
       @data.to_json
     end

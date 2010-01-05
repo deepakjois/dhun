@@ -14,6 +14,11 @@ context "the Dhun::Result" do
     should("return false if result is error") { Dhun::Result.new('noterror','testing').error? }.equals false
   end
 
+  context "[] method" do
+    should("return 'hello'") { Dhun::Result.new('success','hello')[:message] }.equals("hello")
+    should("return :success") { Dhun::Result.new('success','hello')['result'] }.equals(:success)
+  end
+
   context "to_json method" do
     asserts("returns as json") do
       Dhun::Result.new('success','test').to_json
