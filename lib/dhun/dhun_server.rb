@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'eventmachine'
 require 'json'
-%w[logger handler].each { |lib| require File.dirname(__FILE__) + "/#{lib}" }
+%w[logger handler result].each { |lib| require File.dirname(__FILE__) + "/#{lib}" }
 
 module Dhun
   # Handler for commands sent from client
@@ -12,7 +12,7 @@ module Dhun
       #puts "-- client connected"
     end
 
-    def receive_data data
+    def receive_data(data)
       begin
         @@logger.debug data
         cmd = JSON.parse(data)
@@ -31,7 +31,7 @@ module Dhun
         raise "No Command!" if command.nil?
         result = handler.send(command,*arguments)
         @@logger.debug "Sending #{result}"
-        send_data result
+        send_data Dhun::Result.new(*result).to_json
       rescue StandardError => ex
         @@logger.log "-- error : #{ex.message}"
         @@logger.log ex.backtrace
