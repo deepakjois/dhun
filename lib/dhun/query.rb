@@ -26,7 +26,7 @@ module Dhun
     attr_accessor :spotlight_query,:query_args,:is_valid,:logger
 
     def initialize(args="")
-      @logger = Logger.instance
+      @logger = Dhun::Logger.instance
       @query_args = args
       @is_valid = parse!
     end
