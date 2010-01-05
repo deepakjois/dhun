@@ -2,33 +2,31 @@ require 'json'
 module Dhun
   # Handling commands sent by Dhun client
   class Handler
-    def stop
-      result = Result.new :success, "Dhun is stopping"
-      Server.stop
-      Player.instance.stop
-      return result.to_json
-    end
+    attr_reader :player
     
+    def initialize
+      @player = Dhun::Player.instance
+    end
+
     def play(*args)
-      @player = Player.instance
-      q = Query.new(args)
-      if q.is_valid?
-        files = q.execute_spotlight_query
+      query = Dhun::Query.new(args)
+
+      if query.is_valid?
+        files = query.execute_spotlight_query
+        result =
         if files.empty?
-          result = Result.new :error, "No Results Found"
+          [:error, "No Results Found"]
         else
           @player.play_files files
-          result = Result.new :success, "#{files.size} files queued for playing",
-                              :files => files
+          [:success, "#{files.size} files queued", {:files => files}]
         end
       else
-          result = Result.new :error, "Invalid query syntax. See dhun -h for correct syntax"                              
+        result = [:error, "Invalid query syntax. run dhun help query"]
       end
-      result.to_json
+      result
     end
 
     def enqueue(*args)
-      @player = Player.instance
       q = Query.new(args.join(" "))
       if q.is_valid?
         files = q.execute_spotlight_query
@@ -37,21 +35,20 @@ module Dhun
         else
           @player.enqueue files
           result = Result.new :success, "#{files.size} files queued for playing.",
-                              :files => files
+          :files => files
         end
       else
-          result = Result.new :error, "Invalid query syntax. See dhun -h for correct syntax"                              
+        result = Result.new :error, "Invalid query syntax. See dhun -h for correct syntax"
       end
       result.to_json
     end
 
     def status
-      @player = Player.instance
       status_msg = case @player.status
-                   when :playing then "Dhun is running" 
-                   when :paused  then "Dhun is paused"
-                   when :stopped then "Dhun has stopped"
-                   end
+      when :playing then "Dhun is running"
+      when :paused  then "Dhun is paused"
+      when :stopped then "Dhun has stopped"
+      end
       now_playing = @player.current
       queue = @player.queue
       result = Result.new :success, status_msg, :now_playing => now_playing, :queue => queue
@@ -59,14 +56,12 @@ module Dhun
     end
 
     def history
-      @player = Player.instance
       status_msg = @player.history.empty? ? "No files in history" : "#{@player.history.size} files in history"
       result = Result.new :success, status_msg, :history => @player.history
       result.to_json
     end
-    
+
     def next(skip_length=1)
-      @player = Player.instance
       next_track = @player.next skip_length
       msg = next_track ?  "Dhun is playing #{next_track}" : "Not enough tracks in queue"
       result = Result.new :success, msg
@@ -74,7 +69,6 @@ module Dhun
     end
 
     def prev(skip_length=1)
-      @player = Player.instance
       prev_track = @player.prev skip_length
       msg = prev_track ?  "Dhun is playing #{prev_track}" : "Not enough tracks in history"
       result = Result.new :success, msg
@@ -82,9 +76,8 @@ module Dhun
     end
 
     def pause
-      @player = Player.instance
       @player.pause
-      case @player.status 
+      case @player.status
       when :paused
         result = Result.new :success, "Dhun is paused at #{@player.current}"
       when :stopped
@@ -94,7 +87,6 @@ module Dhun
     end
 
     def resume
-      @player = Player.instance
       @player.resume
       case @player.status
       when :playing
@@ -106,7 +98,6 @@ module Dhun
     end
 
     def shuffle
-      @player = Player.instance
       @player.shuffle
       if @player.queue.empty?
         result = Result.new :error, "Queue is empty"
