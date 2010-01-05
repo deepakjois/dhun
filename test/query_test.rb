@@ -18,6 +18,11 @@ context "the Dhun::Query" do
       @query.create_filter_query(q,Dhun::Query::MD_ITEMS.clone)
     end.equals "kMDItemAlbum == 'test'wc && kMDItemMusicalGenre == 'techno'wc"
     
+    should "throw out non-matching filters" do
+      q = ["album:test","booger:big"]
+      @query.create_filter_query(q,Dhun::Query::MD_ITEMS.clone)
+    end.equals "kMDItemAlbum == 'test'wc"
+    
     asserts("delete keys at mappings") do
       mapping = Dhun::Query::MD_ITEMS.clone
       @query.create_filter_query("album:test",mapping)

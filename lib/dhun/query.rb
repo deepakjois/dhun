@@ -54,13 +54,16 @@ module Dhun
 
     # create filter queries
     # 'album:test' => "kMDItemAlbum == 'test'wc"
+    # ADDITIONALLY, throws out any non matching filters
+    # ['album:test','booger:bigone'] => "kMDItemAlbum == 'test'wc"
     def create_filter_query(filters,mappings)
       filters.collect do |f|
         fltr,query = *(f.split(':'))
+        next unless MAPPINGS[fltr]
         md_item = MAPPINGS[fltr]
         mappings.delete md_item
-        "#{md_item} == '#{query.strip}'wc"
-      end.join(" && ")
+        "#{md_item} == '#{query.strip}'wc && "
+      end.join.chomp(" && ")
     end
 
     # create string queries
