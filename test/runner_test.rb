@@ -7,51 +7,43 @@ context "The Dhun::Runner" do
     should("show all Tasks") { capture(:stdout) { @runner.start(['help']) } }.matches(/Tasks/)
   end
 
-  # context "display list" do
-  #   should("display") { @runner.start(['help']) }
-  # end
-
-  # context "start task" do
-    #   # context "when server running" do
-    #   #   setup { capture(:stdout) { @runner.start(['start']) } }
-    #   #
-    #   #   should("state it is already running") do
-    #   #     capture(:stdout) { @started.start(['start']) }
-    #   #   end.matches(/already running/)
-    #   # end
-    #
-    #   context "when server down" do
-    #     setup { capture(:stdout) { @runner.start(['stop']) } }
-    #
-    #     should("run the server") { capture(:stdout) { @runner.start(['start']) } }.matches(/Starting Dhun/)
-    #   end
-    #
-  #   should("start the server daemonized") do
-  #     capture(:stdout) { @runner.start(['start','-d']) }
-  #   end.matches(/Starting Dhun/)
-  # end
+  context "start task" do
+    should("daemonize the server") { capture(:stdout) {@runner.start(['start','-d'])} }.matches(/Starting Dhun/)
+  end
 
   context "stop task" do
-    context "when server is down" do
-      should "state to start the server" do
-        capture(:stdout) { @runner.start(['stop']) }
-      end.matches(/Please start Dhun server first with/)
-    end
-    context "when server is up" do
-      # setup { @runner.start(['start']) }
       should("stop the server") { capture(:stdout) { @runner.start(['stop']) } }.matches(/Stopping Dhun/)
-    end
   end
 
   context "query task" do
-    should("ask to start server when server stopped") do
+    
+    should("have found no results") do
       capture(:stdout) {@runner.start(['query','notgoingtoquery'])}
-    end.matches(/Please start Dhun server/)
+    end.matches(/No Results Found/)
 
     should("show description") do
       capture(:stdout) { @runner.start(['help','query']) }
-    end.matches(/songs/)
+    end.matches(/query FILTER/)
+    
+    should "show 2 results" do
+        mock.instance_of(Dhun::Query).execute_spotlight_query { ["first","second"] }
+        capture(:stdout) { @runner.start(['query','bobby']) }
+    end.matches(/2 Results/)
+    
+    should "show the results" do
+        mock.instance_of(Dhun::Query).execute_spotlight_query { ["first"] }
+        capture(:stdout) { @runner.start(['query','bobby']) }
+    end.matches(/first/)
   end
 
+  context "play task" do
+    
+    should("return invalid response") { capture(:stdout) { @runner.start(['play','bobby']) } }.matches(/Invalid/)
+    
+    # should "return success for response" do
+    #   stub(Dhun::Runner).get_json_response(anything,anything) { Dhun::Result.new(:result => :success,:message => 'bobby') }
+    #   capture(:stdout) { @runner.start(['play','bobby']) }
+    # end.matches(/bobby/)
+  end
 
 end
