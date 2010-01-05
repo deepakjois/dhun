@@ -1,6 +1,6 @@
 require File.expand_path("test_helper", File.dirname(__FILE__))
 
-context "the Dhun Client" do
+context "the Dhun::Client" do
 
   context "with server down" do
     should("raise an error") do

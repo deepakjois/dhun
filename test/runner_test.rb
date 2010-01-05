@@ -1,6 +1,6 @@
 require File.expand_path("test_helper", File.dirname(__FILE__))
 
-context "The Dhun Runner" do
+context "The Dhun::Runner" do
   setup { @runner = Dhun::Runner.dup }
 
   context "help option" do

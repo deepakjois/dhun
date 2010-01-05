@@ -1,6 +1,6 @@
 require File.expand_path("test_helper", File.dirname(__FILE__))
 
-context "the Result" do
+context "the Dhun::Result" do
 
   should("assign @data") { Dhun::Result.new('success','testing') }.assigns(:data)
 
