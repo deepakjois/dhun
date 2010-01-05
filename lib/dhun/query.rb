@@ -18,7 +18,9 @@ module Dhun
       "album" => :kMDItemAlbum,
       "artist" => :kMDItemAuthors,
       "title" => :kMDItemTitle,
-      "genre" => :kMDItemMusicalGenre
+      "genre" => :kMDItemMusicalGenre,
+      "composer" => :kMDItemComposer,
+      "display" => :kMDItemDisplayName
     }
 
     attr_accessor :spotlight_query,:query_args,:is_valid,:logger
@@ -79,6 +81,8 @@ module Dhun
     end
 
     # create spotlight queries
+    # with query 'album:test' =>
+    # "kMDItemContentTypeTree == 'public.audio' && kMDItemAlbum == 'test'wc"
     def create_spotlight_query(filter_query,string_query)
       ["kMDItemContentTypeTree == 'public.audio'", filter_query, string_query].select do
         |s| s.length > 0

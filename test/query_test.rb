@@ -63,10 +63,20 @@ context "the Dhun::Query" do
     
   end
 
-  context "parse method" do
+  context "parse! method" do
     context "with no query args" do
       setup { @query = Dhun::Query.new }
       should("return false") { @query.parse! }.equals false
+    end
+    context "with query args" do
+      setup do
+        stub(@query).create_filter_query(anything,anything) { true }
+        stub(@query).create_string_query(anything,anything) { true }
+        stub(@query).create_spotlight_query(anything,anything) { "spotlight query" }
+        @query.parse!
+      end
+      asserts("assigns @spotlight_query") {@query.spotlight_query }.equals "spotlight query"
+      should("return true").equals true
     end
   end
 
