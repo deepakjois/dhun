@@ -88,25 +88,66 @@ module Dhun
       
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
-      if files
-        
-        #prompt for index of song to play and return it in pretty format. cough.
-        answer = ask "Enter index to play: ",:yellow
-        indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
-        selected = indexes.map { |index| files[index.to_i] }
-        say "selected:",:green
-        say_list selected
-        
-        #send out the command to server and see what it has to say.
-        response = get_response(:play,selected)
-        if response
-          say(response[:message],:red) unless response.success?
-          say(response[:message],:cyan)
-        end
-      end
+      play_enqueue(files,"Enter index to play: ",:play)
     end
 
-    protected
+    desc "enqueue SEARCH",<<-EOF
+    enqueue songs that match the SEARCH. run dhun help query for filter details.
+    once querying is complete, designate the index of song to enqueue
+    ex:
+      Enter song index to enqueue:
+      1
+    multiple indexes can be seperate by ',' or spaces
+    ex:
+      1,2,3 OR 1 2 3
+    EOF
+    method_option :artist, :type => :string, :aliases => '-ar'
+    method_option :album, :type => :string, :aliases => '-al'
+    method_option :genre, :type => :string, :aliases => '-g'
+    method_option :file, :type => :string, :aliases => '-f'
+    method_option :title, :type => :string, :aliases => '-t'
+    def enqueue(search=nil)
+      
+      # invoke query command and return us all the files found.
+      files = invoke :query, [search], options
+      play_enqueue(files,"Enter index to queue: ",:enqueue)
+    end
+
+    desc "next COUNT", "skips to next song by COUNT"
+    def next(count=1)
+      return_response(:next,[],count)
+    end
+    
+    desc "prev COUNT", "skips to previous song by COUNT"
+    def prev(count=1)
+      return_response(:prev,[],count)
+    end
+
+    desc "status", "shows the status"
+    def status
+      response = return_response(:status,[:now_playing,:queue])
+      say "Currently Playing:",:magenta
+      say response[:now_playing],:white
+      say "Queue:",:cyan
+      say_list response[:queue]
+    end
+
+    desc "history", "shows the previously played songs"
+    def history
+      response = return_response(:history,[:history])
+      say "History:",:cyan
+      say_list response[:history]
+    end
+    
+    desc "shuffle", "shuffles the queue"
+    def shuffle
+      response = return_response(:shuffle,[:queue])
+      say "Queue:",:cyan
+      say_list response[:queue]
+    end
+
+
+    private
 
     # sends command to dhun client
     def send_command(command,arguments=[])
@@ -118,7 +159,6 @@ module Dhun
     def get_response(command,arguments=[])
       if server_running?
           resp = send_command(command,arguments)
-          say resp.inspect.to_s
           return Dhun::Result.from_json_str(resp)
       end
     end
@@ -143,6 +183,34 @@ module Dhun
       else
         say("Please start Dhun server first with : dhun start", :red) unless verbose == :silent
         return false
+      end
+    end
+    
+    
+    # DRY method for play and enqueue
+    def play_enqueue(files,prompt,action)
+      if files
+        
+        #prompt for index of song to play and return it in pretty format. cough.
+        answer = ask prompt,:yellow
+        indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
+        selected = indexes.map { |index| files[index.to_i] }
+        say "selected:",:green
+        say_list selected
+        
+        return_response(action,nil,selected)
+      end
+    end
+
+    #send out the command to server and see what it has to say.
+    def return_response(action,keys,argument=[])
+      response = get_response(action,argument)
+      if response
+        color = response.success? ? :red : :cyan
+        say response[:message], color
+        if keys
+          return keys.inject({}) {|base,key| base[key.to_sym] = response[key.to_sym] ; base}
+        end
       end
     end
 

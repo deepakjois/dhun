@@ -30,7 +30,7 @@ module Dhun
       handler = Dhun::Handler.new
       raise "No Command!" if command.nil?
       result =
-      if arguments
+      if arguments and arguments != [] # this check is on the sloppy side...
         handler.send command, arguments
       else
         handler.send command
