@@ -84,7 +84,7 @@ module Dhun
       @player.send action
       result =
       case @player.status
-      when :playing then [:success, (messages.first % @player.current)]
+      when :playing,:paused then [:success, (messages.first % @player.current)]
       when :stopped then [:error, messages.last]
       end
       result
