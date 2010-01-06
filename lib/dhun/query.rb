@@ -5,66 +5,58 @@ module Dhun
 
     MD_ITEMS = [
       :kMDItemAlbum,
-      :kMDItemAuthors, 
-      :kMDItemComposer, 
-      :kMDItemDisplayName, 
-      :kMDItemFSName, 
-      :kMDItemTitle, 
+      :kMDItemAuthors,
+      :kMDItemComposer,
+      :kMDItemDisplayName,
+      :kMDItemFSName,
+      :kMDItemTitle,
       :kMDItemMusicalGenre
-      ]
-      
+    ]
+
     MAPPINGS = {
-      "file" => :kMDItemFSName,
-      "album" => :kMDItemAlbum,
-      "artist" => :kMDItemAuthors,
-      "title" => :kMDItemTitle,
-      "genre" => :kMDItemMusicalGenre,
-      "composer" => :kMDItemComposer,
-      "display" => :kMDItemDisplayName
+      :file => :kMDItemFSName,
+      :album => :kMDItemAlbum,
+      :artist => :kMDItemAuthors,
+      :title => :kMDItemTitle,
+      :genre => :kMDItemMusicalGenre,
+      :composer => :kMDItemComposer,
+      :display => :kMDItemDisplayName
     }
 
-    attr_accessor :spotlight_query,:query_args,:is_valid,:logger
+    attr_accessor :spotlight_query,:is_valid,:logger,:query_search,:query_fields
 
-    def initialize(args="")
+    def initialize(search=nil,fields={})
       @logger = Dhun::Logger.instance
-      @query_args = args
+      @query_search = search
+      @query_fields = fields
       @is_valid = parse!
     end
 
+    # parses all search terms and stores query
+    # return false if both are empty.
     def parse!
-      return false if @query_args.empty?
-      
-      parse_filters,parse_strings = [],[]
-      mappings = MD_ITEMS.clone
-      
-      # seperate the filter queries and regular string queries
-      @query_args.each do |arg|
-        is_filter?(arg) ? parse_filters.push(arg) : parse_strings.push(arg)
-      end
-      
+      return false if @query_search.nil? and @query_fields.empty?
+
+      mappings = MD_ITEMS.clone   #instantiate mappings to be picked off by query methods
       #create the queries
-      filter_query = create_filter_query(parse_filters,mappings)
-      string_query = create_string_query(parse_strings,mappings)
+      filter_query = create_filter_query(@query_fields,mappings)
+      string_query = create_string_query(@query_search,mappings)
       @spotlight_query = create_spotlight_query(filter_query,string_query)
 
       @logger.debug @spotlight_query
       return true
     end
 
-    # returns @is_valid
-    def is_valid?; @is_valid; end
-
     # create filter queries
-    # 'album:test' => "kMDItemAlbum == 'test'wc"
+    # { :album => 'test' } => "kMDItemAlbum == 'test'wc"
     # ADDITIONALLY, throws out any non matching filters
-    # ['album:test','booger:bigone'] => "kMDItemAlbum == 'test'wc"
+    # { :album => 'test', :booger => 'one' } => "kMDItemAlbum == 'test'wc"
     def create_filter_query(filters,mappings)
-      filters.collect do |f|
-        fltr,query = *(f.split(':'))
-        next unless MAPPINGS[fltr]
-        md_item = MAPPINGS[fltr]
+      filters.collect do |field,value|
+        next unless MAPPINGS[field.to_sym] # makes sure that field is to sym, or funky stuff happens
+        md_item = MAPPINGS[field.to_sym]
         mappings.delete md_item
-        "#{md_item} == '#{query.strip}'wc && "
+        "#{md_item} == '#{value}'wc && "
       end.join.chomp(" && ")
     end
 
@@ -73,7 +65,12 @@ module Dhun
     # by create_filter_query
     # 'test' => "( kMDItemTitle == 'holy'wc || kMDItemMusicalGenre == 'holy'wc )"
     # if kMDItemTitle and kMDItemMusicalGenre are the only fields left open.
+    # returns "" if given nil
+    # if given multiple strings:
+    # 'holy','test' =>
+    # ( kMDItemTitle == 'holy'wc || kMDItemMusicalGenre == 'holy'wc ) && ( kMDItemTitle == 'test'wc || kMDItemMusicalGenre == 'test'wc )
     def create_string_query(strings,mappings)
+      return "" unless strings
       strings.collect do |keyword|
         query = mappings.collect { |key| "%s == '%s'wc" % [key,keyword] }.join(" || ")
         "( #{query} )"
@@ -81,7 +78,7 @@ module Dhun
     end
 
     # create spotlight queries
-    # with query 'album:test' =>
+    # with {:album => 'test'},"" =>
     # "kMDItemContentTypeTree == 'public.audio' && kMDItemAlbum == 'test'wc"
     def create_spotlight_query(filter_query,string_query)
       ["kMDItemContentTypeTree == 'public.audio'", filter_query, string_query].select do
@@ -89,16 +86,12 @@ module Dhun
       end.join(" && ")
     end
 
-    # returns false if str does not contain ':' => 'meowmix'
-    # returns false if str token not included in mappings
-    def is_filter?(str)
-      return false unless str.index ":"
-      return MAPPINGS.keys.member?(str.split(":").first)  # Check if filter is valid
-    end
-
     # Use extension to query spotlight
     def execute_spotlight_query
       return DhunExt.query_spotlight(@spotlight_query)
     end
+
+    def is_valid?; @is_valid; end
+
   end
 end
