@@ -1,8 +1,7 @@
 require 'rubygems'
 require 'eventmachine'
 require 'json'
-%w[logger handler result].each { |lib| require File.dirname(__FILE__) + "/#{lib}" }
-
+%w[handler logger player query result].each {|lib| require File.dirname(__FILE__) + "/#{lib}"}
 module Dhun
   # Handler for commands sent from client
   module DhunServer
@@ -15,11 +14,13 @@ module Dhun
     def receive_data(data)
       begin
         @@logger.debug data
+        puts data.inspect.to_s
         cmd = JSON.parse(data)
-        handle_client_request cmd["command"], cmd["arguents"]
+        handle_client_request cmd["command"], cmd["arguments"]
       rescue StandardError => ex
-        @@logger.log "Error parsing command : #{ex.message}"
+        @@logger.log ex.message
         @@logger.log ex.backtrace
+        send_data Dhun::Result.new(:error,ex.message).to_json
       ensure
         close_connection true
       end
@@ -27,15 +28,20 @@ module Dhun
 
     def handle_client_request(command,arguments)
       handler = Dhun::Handler.new
-      begin
-        raise "No Command!" if command.nil?
-        result = handler.send(command,*arguments)
-        @@logger.debug "Sending #{result}"
-        send_data Dhun::Result.new(*result).to_json
-      rescue StandardError => ex
-        @@logger.log "-- error : #{ex.message}"
-        @@logger.log ex.backtrace
+      raise "No Command!" if command.nil?
+      result =
+      if arguments
+        handler.send command, arguments
+      else
+        handler.send command
       end
+      @@logger.debug "Sending #{result}"
+      if result
+        puts result.inspect.to_s
+      else
+        puts 'nil'
+      end
+      send_data Dhun::Result.new(*result).to_json
     end
 
     def unbind
@@ -57,7 +63,7 @@ end
 if ARGV
   Dhun::Logger.instance.file = ARGV[1]
   Dhun::Logger.instance.log "Starting Duhn"
-  at_exit { remove_socket_file(ARGV[0]) }
+  at_exit { remove_socket_file(ARGV[0]); stop! }
   EventMachine::run do
     puts "Dhun Server at: #{ARGV[0]}"
     trap('QUIT') { stop! }

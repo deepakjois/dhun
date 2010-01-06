@@ -5,7 +5,7 @@ module Dhun
   autoload :Controller, 'dhun/controller'
   autoload :Server, 'dhun/server'
   autoload :DhunServer, 'dhun/dhun_server'
-  autoload :DhunClient, 'dhun/dhun_client'
+  autoload :Client, 'dhun/client'
   autoload :Handler, 'dhun/handler'
   autoload :Player, 'dhun/player'
   autoload :Query, 'dhun/query'

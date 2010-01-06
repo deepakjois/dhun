@@ -18,12 +18,13 @@ context "The Dhun::Runner" do
   context "query task" do
     
     should("have found no results") do
+      mock.instance_of(Dhun::Query).execute_spotlight_query { [] }
       capture(:stdout) {@runner.start(['query','notgoingtoquery'])}
     end.matches(/No Results Found/)
 
     should("show description") do
       capture(:stdout) { @runner.start(['help','query']) }
-    end.matches(/query FILTER/)
+    end.matches(/query SEARCH/)
     
     should "show 2 results" do
         mock.instance_of(Dhun::Query).execute_spotlight_query { ["first","second"] }

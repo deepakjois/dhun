@@ -8,12 +8,12 @@ module Dhun
       @player = Dhun::Player.instance
     end
 
-    def play(*args)
-      play_enqueue :play_files,args
+    def play(files)
+      play_enqueue :play_files,files
     end
 
-    def enqueue(*args)
-      play_enqueue :enqueue,args
+    def enqueue(files)
+      play_enqueue :enqueue,files
     end
     
     def pause
@@ -61,22 +61,10 @@ module Dhun
     private
 
     # for play and enqueue and to keep DRY.
-    def play_enqueue(action,args)
-      query = Dhun::Query.new(args)
-
-      if query.is_valid?
-        files = query.execute_spotlight_query
-        result =
-        if files.empty?
-          [:error, "No Results Found"]
-        else
-          @player.send(action,files)
-          [:success, "#{files.size} files queued", {:files => files}]
-        end
-      else
-        result = [:error, "Invalid query syntax. run dhun help query"]
-      end
-      result
+    def play_enqueue(action,files)
+      return [:error, "No Files Queued"] if files.empty?
+      @player.send(action,files)
+      [:success, "#{files.size} files queued", {:files => files}]
     end
 
     # for pause and resume to keep DRY
