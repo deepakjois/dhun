@@ -14,7 +14,6 @@ module Dhun
     method_option :debug, :type => :boolean, :default => false, :aliases => '-D'
     def start_server
       unless server_running?(options[:socket],:silent)
-        # Dhun::Server.new(options).start
         server_path = File.join File.dirname(__FILE__), 'server.rb'
         cmd = options[:daemonize] ? 'start' : 'run'
         say "Starting Dhun", :green
@@ -26,7 +25,6 @@ module Dhun
 
     desc "stop_server","stop the Dhun Server"
     def stop_server
-      # send_command(:stop) if server_running?
       Dhun::Player.instance.stop
       server_path = File.join File.dirname(__FILE__), 'server.rb'
       system("ruby #{server_path} stop")
@@ -111,7 +109,7 @@ module Dhun
       files = invoke :query, [search], options
       if files
         #prompt for index of song to play and return it in pretty format. cough.
-        answer = ask "Enter index to queue",:yellow
+        answer = ask "Enter index to queue: ",:yellow
         indexes =
         case
         when answer.include?(',') then answer.split(',')
@@ -120,7 +118,6 @@ module Dhun
         else
           0..(files.size - 1)
         end
-        # indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
         selected = indexes.map { |index| files[index.to_i] }
         say "selected:",:green
         say_list selected
@@ -217,22 +214,6 @@ module Dhun
       end
     end
     
-    
-    # DRY method for play and enqueue
-    def play_enqueue(files,prompt,action)
-      if files
-        
-        #prompt for index of song to play and return it in pretty format. cough.
-        answer = ask prompt,:yellow
-        indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
-        selected = indexes.map { |index| files[index.to_i] }
-        say "selected:",:green
-        say_list selected
-        
-        return_response(action,nil,selected)
-      end
-    end
-
     #send out the command to server and see what it has to say.
     def return_response(action,keys,argument=[])
       response = get_response(action,argument)

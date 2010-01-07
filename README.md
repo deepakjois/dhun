@@ -20,15 +20,25 @@ the `gem` command to compile the native extensions.
 
     $ gem sources -a http://gemcutter.org
     $ gem install dhun
+    
+
+this fork(achiu/dhun) can be installed via rake
+
+    $ sudo rake install
+    
 
 ### Starting Dhun
 
-    $ dhun start
+    $ dhun start_server
     Starting Dhun
 
-Pass the `-d` option to run the server as a daemon in the background. See
-`dhun -h` for more options.
+this runs the Dhun server as a daemon by default. to not run it as a daemon:
 
+    $ dhun start_server --daemonize false
+    or
+    $ dhun start_server -d false
+
+See `dhun help start_server for more information`
 
 ### Querying for files
 
@@ -38,53 +48,105 @@ will look for files matching that keyword and start playing them.
 You can also query the Spotlight database before playing the files, with the 
 `query` command.
 
-    $ dhun query here
-    3 Results
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/01 40 Day Dream.mp3
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
+    $ dhun query deadmau5
 
-You can use query filters like `album:sid` or `artist:rahman`. Currently
-`album`, `artist`, `title`, `genre` and `file` filters are supported. 
+    Querying: deadmau5 | 6 Results
+    0 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/03 One + One - No Pressure (Deadmau5 Remix).mp3
+    1 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/09 Chris Lake vs. Deadmau5 - I Thought Inside Out (Original Mix).mp3
+    2 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/01 Alone With You.mp3
+    3 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/02 Arguru (EDX's 5un5hine Remix).mp3
+    4 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/03 Bye Friend.mp3
+    5 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/04 Clockwork.mp3
 
-    $ dhun query genre:world album:gypsy
-    5 results
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 11 - Eastenders - Vino Iubirea Mea (!DelaDap Remix) (Germany).mp3
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 10 - Luminescent Orchestrii - Amari Szi, Amari (Amon Remix)  (USA).mp3
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 09 - Kistehén Tánczenekar - Virágok a Réten (Romano Drom Remix) (Hungary).mp3
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 08 - Anselmo Crew - Süt Ictim Dilim Yandi (Hungary).mp3
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 07 - Magnifico & Turbolentza - Zh Ne Sui Pa Pur Tua (Slovenia).mp3
 
-You can even mix the filters with a regular query like.
 
-    $ dhun query genre:world album:gypsy Czech
-    2 Results
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 01 - !DelaDap - Zsa Manca (Czech Republic-Hungary).mp3
-    /Users/deepak/Dropbox/shared/music/gypsy/Putumayo - Gypsy Groove - 03 - Gipsy.cz - Jednou (Czech Republic).mp3
+you can query based on certain filters such as artist,albums, title, genre and file.
 
-Note that if you want to pass filters longer than a word, you will need to
-enclose the argument in double quotes, like `dhun query "artist:akli d"`
+    $ dhun query --artist="Paul van Dyk" --genre=trance --file 'Paul' --title in
+
+     Querying: [nil] | artist:Paul van Dyk title:in genre:trance file:Paul
+     3 Results
+     0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/08 - Paul van Dyk - Talk In Grey.mp3
+     1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/09 - Paul van Dyk - In Circles.mp3
+     2 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/10 - Paul van Dyk - In Between.mp3
+
+
+YOu can mix filters with regular queries as well.
+
+    $ dhun query paul --title=haunted
+
+    Querying: paul | title:haunted
+    1 Results
+    0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+
+You can also pass in multiple regular expressions too. they just need to be seperated by commas (,)
+
+    $ dhun query paul,trance
+
+    Querying: paul,trance | 7 Results
+    0 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/101-paul_van_dyk-volume__the_productions.mp3
+    1 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/201-paul_van_dyk-volume__the_remixes_part_1.mp3
+    2 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/301-paul_van_dyk-volume__the_remixes_part_2.mp3
+    3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/04 - Paul van Dyk - Complicated (Feat. Ashley Tomberlin).mp3
+    4 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    5 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica Sutta).mp3
+    6 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/03 - Paul van Dyk - Sabotage.mp3
+
+
+Now lets put it all together and go crazy.
+
+    $ dhun query 'paul van',dyk --genre=trance --title=haunted
+
+    Querying: paul van,dyk | title:haunted genre:trance
+    1 Results
+    0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+
 
 ### Playing Files
 
-When you are ready to play the files, pass the query to the `play` command.
-Note that the `play` command will remove anything that may be already there on
-your queue. To append files to queue, use `enqueue`.
+To play the files, first enqueue the songs.
 
-    $ dhun play here
-    3 files queued for playing
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/01 40 Day Dream.mp3
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
+    $ dhun play paul,trance
+
+this can also be done by
+
+    $ dhun enqueue paul,trance
+
+    Querying: paul,trance | 7 Results
+    0 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/101-paul_van_dyk-volume__the_productions.mp3
+    1 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/201-paul_van_dyk-volume__the_remixes_part_1.mp3
+    2 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/301-paul_van_dyk-volume__the_remixes_part_2.mp3
+    3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/04 - Paul van Dyk - Complicated (Feat. Ashley Tomberlin).mp3
+    4 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    5 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica Sutta).mp3
+    6 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/03 - Paul van Dyk - Sabotage.mp3
+    Enter index to queue: 
+
+It will prompt you to enter the index of the songs you want queued.(numbers on the left side)
+You can enter them separated by commas(1,2,3,4) or spaces(1 2 3 4) or a single song if you like.
+If you leave the prompt blank and enter, it will queue ALL the resulting songs.
+
+    Enter index to queue 4 5
+    selected:
+    0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica     Sutta).mp3
+    2 files queued
+
+
+Once queued, the songs will begin playing. you can continue to enqueue more songs via enqueue and play.
     
-Enqueuing more files.
-
-    $ dhun enqueue chup
-    1 files queued for playing.
-    /Users/deepak/Dropbox/shared/music/Coke Studio/Chup.mp3
-    
-
 ### Controlling Playback
+
+
+Starting Playback(needs to have songs in queue)
+
+    $ dhun play
+    resuming playback
+    
+Stopping playback.
+
+    $ dhun stop
+    Dhun has stopped
 
 Pausing playback.
 
@@ -126,29 +188,25 @@ Status
 
     $ dhun status
     Dhun is running
-    Now playing /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/02 Janglin.mp3
-    /Users/deepak/Music/iTunes/iTunes Media/Music/Edward Sharpe & The Magnetic Zeros/Here Comes/03 Carries On.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/01 - 40 Day Dream.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/02 - Janglin.mp3
-    /Users/deepak/Music/Amazon MP3/Edward Sharpe & The Magnetic Zeros/Here Comes/03 - Carries On.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/02 - Janglin.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/01 - 40 Day Dream.mp3
-    /Users/deepak/Dropbox/shared/music/Here Comes/03 - Carries On.mp3
-
+    Currently Playing:
+    /Volumes/Storage/Music/Hydeout Productions (Second Collection)/02 Sky is Falling (feat. C.L. Smooth).mp3
+    Queue:
+    0 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
+    1 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/05 Hikari(feat. Substantial).mp3
+    
 History
 
     $ dhun history
-    3 files in history
-    /Users/deepak/Dropbox/shared/music/Coke Studio/Bari-Barsi.mp3
-    /Users/deepak/Dropbox/shared/music/Coke Studio/Aankhon-Kay-Sagar.mp3
-    /Users/deepak/Dropbox/shared/music/Coke Studio/Paimona.mp3
+    1 files in history
+    History:
+    0 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
+    
 
 ### Stopping Dhun
 
-This will exit the process.
+This will exit the dhun server.
 
-    $ dhun stop
+    $ dhun stop_server
 
 ## Coming Soon
 
