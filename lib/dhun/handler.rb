@@ -10,22 +10,18 @@ module Dhun
 
     def play
       response =
-      case @player.status
-      when :playing
-        [:error,"already playing"]
-      when :paused,:stopped
-        @player.send :play
-        [:success,"resuming playback"]
+      case @player.play
+      when false then [:error,"already playing"]
+      when true then [:success, "resuming playback"]
+      when :empty then [:error, 'no file in queue']
       end
       response
     end
 
-    def play_files(files)
-      play_enqueue :play_files, files
-    end
-
     def enqueue(files)
-      play_enqueue :enqueue,files
+      return [:error, "No files queued"] if (@player.queue.empty? and files.empty?)
+      @player.send(:enqueue,files)
+      [:success, "#{files.size} files queued", {:files => files}]
     end
 
     def pause
@@ -76,13 +72,6 @@ module Dhun
     end
 
     private
-
-    # for play and enqueue and to keep DRY.
-    def play_enqueue(action,files=[])
-      return [:error, "No files queued"] if (@player.queue.empty? and files.empty?)
-      @player.send(action,files)
-      [:success, "#{files.size} files queued", {:files => files}]
-    end
 
     # for pause and resume and stop to keep DRY
     def pause_resume(action,messages)

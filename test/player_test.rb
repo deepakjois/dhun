@@ -16,14 +16,17 @@ context "the Dhun::Player" do
   context "play method" do
     setup do
       stub(DhunExt).play_file(anything) { true }
+      @player.queue = ['one']
     end
-
     should("return false if @status is :playing") do
       @player.status = :playing ; @player.play
     end.equals false
     should "return true if @status is :paused" do
       @player.status = :paused ; @player.play
     end.equals true
+    should "return :empty if queue empty" do
+      @player.queue = [] ; @player.play
+    end.equals :empty
     
     context "while :stopped" do
       setup do
@@ -186,23 +189,6 @@ context "the Dhun::Player" do
     context "with empty queue" do
       setup { @player.queue = [] }
       should("return false") { @player.shuffle }.equals false
-    end
-  end
-
-  context "play_files method" do
-    setup do
-      stub(@player).stop { true }
-      stub(@player).play { true }
-      @player.history = [] ; @player.queue = ['test']
-    end
-    context "with file" do
-      setup { @player.play_files(['song']) }
-      should("add to queue") { @player.queue }.equals ['song']
-      should("return true").equals true
-    end
-    context "with no file" do
-      setup { @player.play_files([]) }
-      should('return false').equals false
     end
   end
 

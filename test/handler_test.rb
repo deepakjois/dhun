@@ -7,57 +7,19 @@ context "the Dhun::Handler" do
 
   context "play method" do
 
-    context "with status :playing" do
-      setup do
-        stub(@handler.player).play { true }
-        stub(@handler.player).status { :playing }
-      end
+    context "when player return false" do
+      setup { stub(@handler.player).play { false } }
       should("return already played") { @handler.play }.equals [:error,"already playing"]
     end
 
-    context "with status :paused" do
-      setup do
-        stub(@handler.player).play { true }
-        stub(@handler.player).status { :paused }
-      end
+    context "when player return true" do
+      setup { stub(@handler.player).play { true } }
       should("return resuming") { @handler.play }.equals [:success,"resuming playback"]
     end
 
-    context "with status :stopped" do
-      setup do
-        stub(@handler.player).play { true }
-        stub(@handler.player).status { :stopped }
-      end
-      should("return playing") { @handler.play }.equals [:success,"resuming playback"]
-    end
-  end
-
-
-  context "play_files method" do
-
-    context "with no files" do
-      setup do
-        stub(@handler.player).play_files([]) { true }
-      end
-      should("return none queued") { @handler.play_files([]) }.equals [:error, "No files queued"]
-    end
-
-    context "with one file" do
-      setup do
-        stub(@handler.player).play_files(['test']) { true }
-      end
-      should("return 1 queued") do
-        @handler.play_files(['test'])
-      end.equals [:success, "1 files queued",{:files => ['test']}]
-    end
-
-    context "with two files" do
-      setup do
-        stub(@handler.player).play_files(['one','two']) { true }
-      end
-      should "return number of files queue" do
-        @handler.play_files(['one','two'])
-      end.equals [:success, "2 files queued", {:files => ['one','two']}]
+    context "when player return :empty" do
+      setup { stub(@handler.player).play { :empty } }
+      should("return no queue") { @handler.play }.equals [:error, "no file in queue"]
     end
   end
 

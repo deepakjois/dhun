@@ -12,19 +12,6 @@ module Dhun
       @status = :stopped
     end
 
-
-    # clear queue and enqueue files to play
-    def play_files(files)
-      unless files.empty?
-        stop ; @queue.clear
-        files.each { |f| self.queue.push f }
-        play
-        return true
-      end
-      @logger.log "Empty Queue"
-      return false
-    end
-
     # enqueue files and call play.
     def enqueue(files)
       return false if files.empty?
@@ -34,6 +21,7 @@ module Dhun
 
     # commence playback
     def play
+      return :empty if @queue.empty?
       return false if @status == :playing
       return resume if @status == :paused
       @status = :playing
