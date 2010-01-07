@@ -87,9 +87,7 @@ module Dhun
     method_option :title, :type => :string, :aliases => '-t'
     def play(search=nil)
       return return_response(:play,[]) if search.nil? and options.empty?
-      # invoke query command and return us all the files found.
-      files = invoke :query, [search], options
-      play_enqueue(files,"Enter index to play: ",:play_files)
+      invoke :enqueue, [search], options
     end
 
     desc "enqueue SEARCH",<<-EOF
@@ -111,7 +109,16 @@ module Dhun
       
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
-      play_enqueue(files,"Enter index to queue: ",:enqueue)
+      if files
+        #prompt for index of song to play and return it in pretty format. cough.
+        answer = ask "Enter index to queue",:yellow
+        indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
+        selected = indexes.map { |index| files[index.to_i] }
+        say "selected:",:green
+        say_list selected
+        
+        return_response(:enqueue,nil,selected)
+      end
     end
 
     desc "next COUNT", "skips to next song by COUNT"
