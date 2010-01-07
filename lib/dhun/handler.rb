@@ -19,23 +19,46 @@ module Dhun
     end
 
     def enqueue(files)
-      return [:error, "No files queued"] if (@player.queue.empty? and files.empty?)
-      @player.send(:enqueue,files)
-      [:success, "#{files.size} files queued", {:files => files}]
+      perform_action :enqueue, files, 
+      :success => ["#{files.size} files queued", {:files => files}],
+      :error => ["No files queued"]
     end
 
     def pause
-      pause_resume :pause, ["Dhun is paused at %s","Dhun has already stopped"]
+      perform_action :pause,nil, 
+      :success => "Dhun is paused at #{@player.current}",
+      :error => "Dhun has already paused or stopped"
     end
 
     def resume
-      pause_resume :resume, ["Dhun is playing %s","Dhun has already stopped"]
+      perform_action :resume,nil,
+      :success => "Dhun is resumed at #{@player.current}",
+      :error => "Dhun has already resumed or stopped"
     end
 
     def stop
-      pause_resume :stop, ["Dhun is stopped at %s","Dhun has already stopped"]
+      perform_action :stop,nil,
+      :success => "Dhun has stopped",
+      :error => "Dhun has already stopped"
+    end
+    
+    def next(skip_length=1)
+      perform_action :next,skip_length,
+      :success => "Dhun is playing #{@player.current}",
+      :error => "Not enough tracks in queue"
     end
 
+    def prev(skip_length=1)
+      perform_action :prev, skip_length,
+      :success => "Dhun is playing #{@player.current}",
+      :error => "Not enough tracks in history"
+    end
+    
+    def shuffle
+      perform_action :shuffle,nil,
+      :success => ['Queue is shuffled', { :queue => @player.queue }],
+      :error => 'Dhun cannot shuffle(queue empty, same songs)'
+    end
 
     def status
       status_msg =
@@ -44,44 +67,21 @@ module Dhun
       when :paused  then "Dhun is paused"
       when :stopped then "Dhun has stopped"
       end
-      [:success, status_msg, {:now_playing => @player.current, :queue => @player.queue}]
+      [:success, status_msg, {:current => @player.current, :queue => @player.queue}]
     end
 
     def history
-      status_msg = @player.history.empty? ? "No files in history" : "#{@player.history.size} files in history"
-      [:success, status_msg,{:history => @player.history}]
-    end
-
-    def next(skip_length=1)
-      next_track = @player.next skip_length
-      msg = next_track ?  "Dhun is playing #{next_track}" : "Not enough tracks in queue"
-      [:success, msg]
-    end
-
-    def prev(skip_length=1)
-      prev_track = @player.prev skip_length
-      msg = prev_track ?  "Dhun is playing #{prev_track}" : "Not enough tracks in history"
-      [:success, msg]
-    end
-
-    def shuffle
-      @player.shuffle
-      result =
-      @player.queue.empty? ? [:error, "Queue is empty"] : [:success, "Queue is shuffled", {:queue => @player.queue}]
-      result
+      return [:success, "#{@player.history.size} files in history",{:history => @player.history}] unless @player.history.empty?
+      return [:error, "No files in history"]
     end
 
     private
 
-    # for pause and resume and stop to keep DRY
-    def pause_resume(action,messages)
-      @player.send action
-      result =
-      case @player.status
-      when :playing,:paused then [:success, (messages.first % @player.current)]
-      when :stopped then [:error, messages.last]
-      end
-      result
+    # get response
+    def perform_action(action, arg=nil, message={})
+      result = arg.nil? ? @player.send(action) : @player.send(action,arg)
+      return [:error,message[:error]].flatten unless result
+      return [:success,message[:success]].flatten
     end
 
   end

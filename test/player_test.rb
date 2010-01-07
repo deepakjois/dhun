@@ -190,6 +190,10 @@ context "the Dhun::Player" do
       setup { @player.queue = [] }
       should("return false") { @player.shuffle }.equals false
     end
+    context "with queue of same songs" do
+      setup { @player.queue = ['one','one','one'] }
+      should("return false") { @player.shuffle }.equals false
+    end
   end
 
   context "enqueue method" do

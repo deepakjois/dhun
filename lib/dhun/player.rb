@@ -113,8 +113,9 @@ module Dhun
 
     # shuffle queue if queue is not empty
     # ensures that shuffled queue is not equal to previous queue order
+    # NOTE: if they enqueue all the same songs, this will NOT end. should catch that.
     def shuffle
-      return false if @queue.empty?
+      return false if @queue.empty? or @queue.uniq.size == 1 # this will catch a playlist of same songs
       q = @queue.clone
       while q == @queue
         @queue.size.downto(1) { |n| @queue.push @queue.delete_at(rand(n)) }

@@ -25,25 +25,19 @@ context "the Dhun::Handler" do
 
   context "enqueue method" do
     context "with no file" do
-      setup do
-        stub(@handler.player).enqueue([]) { true }
-      end
+      setup { stub(@handler.player).enqueue([]) { false } }
       should("return none queued") { @handler.enqueue([]) }.equals [:error, "No files queued"]
     end
 
     context "with one file" do
-      setup do
-        stub(@handler.player).enqueue(['one']) { true }
-      end
+      setup { stub(@handler.player).enqueue(['one']) { true } }
       should "return number of files queue" do
         @handler.enqueue(['one'])
       end.equals [:success, "1 files queued", {:files => ['one']}]
     end
 
     context "with two file" do
-      setup do
-        stub(@handler.player).enqueue(['one','two']) { true }
-      end
+      setup { stub(@handler.player).enqueue(['one','two']) { true } }
       should "return number of files queue" do
         @handler.enqueue(['one','two'])
       end.equals [:success, "2 files queued", {:files => ['one','two']}]
@@ -59,21 +53,21 @@ context "the Dhun::Handler" do
       setup { stub(@handler.player).status { :playing } }
       should "return is running" do
         @handler.status
-      end.equals [:success, "Dhun is running", {:now_playing => "easy", :queue => ["goes"]}]
+      end.equals [:success, "Dhun is running", {:current => "easy", :queue => ["goes"]}]
     end
 
     context "when :paused" do
       setup { stub(@handler.player).status { :paused } }
       should "return is running" do
         @handler.status
-      end.equals [:success, "Dhun is paused", {:now_playing => "easy", :queue => ["goes"]}]
+      end.equals [:success, "Dhun is paused", {:current => "easy", :queue => ["goes"]}]
     end
 
     context "when :stopped" do
       setup { stub(@handler.player).status { :stopped } }
       should "return is running" do
         @handler.status
-      end.equals [:success, "Dhun has stopped", {:now_playing => "easy", :queue => ["goes"]}]
+      end.equals [:success, "Dhun has stopped", {:current => "easy", :queue => ["goes"]}]
     end
 
   end
@@ -82,130 +76,108 @@ context "the Dhun::Handler" do
 
     context "with history empty" do
       setup { stub(@handler.player).history { [] } }
-      should "say its empty" do
-        @handler.history
-      end.equals [:success, "No files in history" ,{:history => []}]
+      should("say its empty") { @handler.history }.equals [:error, "No files in history"]
     end
 
     context "with history" do
       setup { stub(@handler.player).history { ['one'] } }
-      should "say its has one" do
-        @handler.history
-      end.equals [:success, "1 files in history" ,{:history => ['one']}]
+      should("say its has one") { @handler.history }.equals [:success, "1 files in history" ,{:history => ['one']}]
     end
   end
-
+  
   context "next method" do
-
     context "with next track" do
       setup do
-        stub(@handler.player).next(1) { 'two' }
+        stub(@handler.player).current { 'two' }
+        stub(@handler.player).next { true }
       end
-      should "show next track" do
-        @handler.next
-      end.equals [:success, "Dhun is playing two"]
+      should("show next track") { @handler.next }.equals [:success, "Dhun is playing two"]
     end
 
     context "without next track" do
-      setup do
-        stub(@handler.player).next(1) { nil }
-      end
-      should "show next track" do
-        @handler.next
-      end.equals [:success, "Not enough tracks in queue"]
+      setup { stub(@handler.player).next { false } }
+      should("show next track") { @handler.next }.equals [:error, "Not enough tracks in queue"]
     end
   end
 
   context "prev method" do
-    context "with next track" do
+    context "with prev track" do
       setup do
-        stub(@handler.player).prev(1) { 'two' }
+        stub(@handler.player).current { 'two' }
+        stub(@handler.player).prev { true }
       end
-      should "show next track" do
-        @handler.prev
-      end.equals [:success, "Dhun is playing two"]
+      should("show prev track") { @handler.prev }.equals [:success, "Dhun is playing two"]
     end
 
-    context "without next track" do
-      setup do
-        stub(@handler.player).prev(1) { nil }
-      end
-      should "show next track" do
-        @handler.prev
-      end.equals [:success, "Not enough tracks in history"]
+    context "without prev track" do
+      setup { stub(@handler.player).prev { false } }
+      should("show no history") { @handler.prev }.equals [:error, "Not enough tracks in history"]
     end
   end
 
   context "pause method" do
-    setup do
-      stub(@handler.player).pause { true }
-    end
-
+    setup { stub(@handler.player).current {'haunted'} }
     context "when :playing" do
-      setup do
-        stub(@handler.player).status { :playing }
-        stub(@handler.player).current { "haunted" }
-      end
-      should "show paused" do
-        @handler.pause
-      end.equals [:success, "Dhun is paused at haunted"]
+      setup { stub(@handler.player).pause { true } }
+      should("return :success") { @handler.pause }.equals [:success, 'Dhun is paused at haunted']
     end
-
+    context "when :paused" do
+      setup { stub(@handler.player).pause { false } }
+      should("return :error") { @handler.pause }.equals [:error, 'Dhun has already paused or stopped']
+    end
     context "when :stopped" do
-      setup do
-        stub(@handler.player).status { :stopped }
-      end
-      should "show already stopped" do
-        @handler.pause
-      end.equals [:error, "Dhun has already stopped"]
+      setup { stub(@handler.player).pause { false } }
+      should("return :error") { @handler.pause }.equals [:error, 'Dhun has already paused or stopped']
     end
-
   end
 
   context "resume method" do
-    setup do
-      stub(@handler.player).resume { true }
+    setup { stub(@handler.player).current {'haunted'} }
+    context "when :playing" do
+      setup { stub(@handler.player).resume { false } }
+      should("return :error") { @handler.resume }.equals [:error, 'Dhun has already resumed or stopped']
     end
-
     context "when :paused" do
-      setup do
-        stub(@handler.player).status { :paused }
-        stub(@handler.player).current { "haunted" }
-      end
-      should "show playing" do
-        @handler.resume
-      end.equals [:success, "Dhun is playing haunted"]
+      setup { stub(@handler.player).resume { true } }
+      should("return :success") { @handler.resume }.equals [:success, 'Dhun is resumed at haunted']
     end
-
     context "when :stopped" do
-      setup do
-        stub(@handler.player).status { :stopped }
-      end
-      should "show already stopped" do
-        @handler.resume
-      end.equals [:error, "Dhun has already stopped"]
+      setup { stub(@handler.player).resume { false } }
+      should("return :error") { @handler.resume }.equals [:error, 'Dhun has already resumed or stopped']
+    end
+  end
+
+  context "stop method" do
+    setup { stub(@handler.player).current {'haunted'} }
+    context "when :playing" do
+      setup { stub(@handler.player).stop { true } }
+      should("return :success") { @handler.stop }.equals [:success, 'Dhun has stopped']
+    end
+    context "when :paused" do
+      setup { stub(@handler.player).stop { true } }
+      should("return :success") { @handler.stop }.equals [:success, 'Dhun has stopped']
+    end
+    context "when :stopped" do
+      setup { stub(@handler.player).stop { false } }
+      should("return :error") { @handler.stop }.equals [:error, 'Dhun has already stopped']
     end
   end
 
   context "shuffle method" do
-    setup do
-      stub(@handler.player).shuffle { true }
-    end
-
+    setup { stub(@handler.player).current {'haunted'} }
     context "with queue" do
-      setup { stub(@handler.player).queue { ['one','two'] } }
-      should "return empty" do
+      setup do
+        stub(@handler.player).queue { ['one','two'] }
+        stub(@handler.player).shuffle { true }
+      end
+      should("return :success") do
         @handler.shuffle
-      end.equals [:success, "Queue is shuffled", { :queue => ['one','two'] } ]
+      end.equals [:success, 'Queue is shuffled', { :queue => ['one','two'] }]
     end
-
-    context "with empty queue" do
-      setup { stub(@handler.player).queue { [] } }
-      should "return empty" do
-        @handler.shuffle
-      end.equals [:error, "Queue is empty"]
+    context "with no queue" do
+      setup { stub(@handler.player).shuffle { false } }
+      should("return :error") { @handler.shuffle }.equals [:error, 'Dhun cannot shuffle(queue empty, same songs)']
     end
-
   end
 
 end
