@@ -12,30 +12,34 @@ module Dhun
       @status = :stopped
     end
 
-    def empty_queue
-      stop; @queue.clear
-    end
 
+    # clear queue and enqueue files to play
     def play_files(files)
-      if files.empty?
-        @logger.log "Empty Queue"
-      else
-        empty_queue
+      unless files.empty?
+        stop ; @queue.clear
         files.each { |f| self.queue.push f }
         play
+        return true
       end
+      @logger.log "Empty Queue"
+      return false
     end
 
+    # enqueue files and call play.
     def enqueue(files)
-      files.each { |f| self.queue.push f }
-      play
+      return false if files.empty?
+      files.each { |f| self.queue.push f }; play
+      return true
     end
 
+    # commence playback
     def play
-      return false unless self.status == :stopped
+      return false if @status == :playing
+      return resume if @status == :paused
       @status = :playing
-      @player_thread = Thread.new do
-        while  @status == :playing and !queue.empty?
+      @player_thread =
+      Thread.new do
+        while  @status == :playing and !@queue.empty?
           @current = @queue.shift
           @logger.log "Playing #{@current}"
           DhunExt.play_file @current
@@ -44,41 +48,59 @@ module Dhun
         @status = :stopped
         @current = nil
       end
+      return true
     end
 
+    # pause playback
+    # only on :playing
     def pause
       if @status == :playing
         @status = :paused
         DhunExt.pause
         @logger.debug "pause"
+        return true
       end
+      return false
     end
 
+    # resume playback
+    # only on :paused
     def resume
       if @status == :paused
         @status = :playing
         DhunExt.resume
         @logger.debug "resume"
+        return true
       end
+      return false
     end
 
+    # stops the song
+    # unless :stopped
     def stop
-      @status = :stopped
-      DhunExt.stop
-      # Wait for @player_thread to exit cleanly
-      @player_thread.join unless @player_thread.nil?
-      @logger.debug "Stopped"
+      unless @status == :stopped
+        @status = :stopped
+        DhunExt.stop
+        # Wait for @player_thread to exit cleanly
+        @player_thread.join unless @player_thread.nil?
+        @logger.debug "Stopped"
+        return true
+      end
+      return false
     end
 
+    # plays next song on queue.
+    # returns next_track or false if invalid
     def next(skip_length = 1)
-      @logger.debug "Switching to next"
-      unless @queue.size < skip_length
-        stop # stops current track
-        @queue.shift(skip_length - 1) # Remove skip_length-1 tracks
+      unless skip_length > @queue.size
+        @logger.debug "next invoked"
+        stop
+        @queue.shift(skip_length - 1) #skip_length returns starting with first on queue.
         next_track = @queue.first
-        play # start playing with the next track
+        play
+        return next_track
       end
-      return next_track
+      return false
     end
 
     # when :stopped
@@ -86,25 +108,31 @@ module Dhun
     # when :playing
     # returns the second song in history as first song is current song
     def prev(skip_length = 1)
-      @logger.debug "Switching to prev"
-      unless (@history.size < skip_length and @status == :stopped) or (@history.size <= skip_length and @status == :playing )
-        unless @status == :stopped
-          stop
-          skip_length += 1 # history has increased by one to skip current
-        end
-        tracks = @history.shift skip_length
-        @logger.debug tracks
-        tracks.each { |t| @queue.unshift t }
-        prev_track = @queue.first
-        play # start playing with the next track
+      # skip current track if playing
+      if @status == :playing
+        stop ; skip_length += 1
       end
-      return prev_track
+      unless skip_length > @history.size
+        @logger.debug "previous invoked"
+        tracks = @history.shift skip_length
+        tracks.each { |track| @queue.unshift track }
+        previous = @queue.first
+        play
+        return previous
+      end
+      return false
     end
 
+    # shuffle queue if queue is not empty
+    # ensures that shuffled queue is not equal to previous queue order
     def shuffle
       return false if @queue.empty?
-      @queue.size.downto(1) { |n| @queue.push @queue.delete_at(rand(n)) }
+      q = @queue.clone
+      while q == @queue
+        @queue.size.downto(1) { |n| @queue.push @queue.delete_at(rand(n)) }
+      end
       @logger.debug @queue
+      return true
     end
   end
 end
