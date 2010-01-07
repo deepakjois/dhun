@@ -11,9 +11,6 @@ context "The Dhun::Runner" do
     should("daemonize the server") do
       capture(:stdout) { @runner.start(['start_server','-d']) }
     end.matches(/Starting Dhun/)
-    # should "not start if started" do
-    #   capture(:stdout) { @runner.start(['start_server','-d']) }
-    # end.matches(/is already running/)
   end
 
   context "stop task" do
@@ -42,20 +39,6 @@ context "The Dhun::Runner" do
       mock.instance_of(Dhun::Query).execute_spotlight_query { ["first"] }
       capture(:stdout) { @runner.start(['query','bobby']) }
     end.matches(/first/)
-  end
-
-  context "play task" do
-    # figure how to mock this blasted thing
-    # context "with invalid response" do
-    #   setup do
-    #     @runner = Dhun::Runner.dup
-    #     mock(@runner).ask(anything,anything) { "1 2 3" }
-    #     mock(@runner).get_response(anything,anything) { Dhun::Result.new(:error,"invalid") }
-    #   end
-    #   should "return invalid" do
-    #     capture(:stdout) { @runner.start(['play','omg']) }.matches(/invalid/)
-    #   end
-    # end
   end
 
 end

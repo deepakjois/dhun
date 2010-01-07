@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'dhun'
-  s.version = '0.5.6'
+  s.version = '0.6.0'
   s.summary = "Minimalist music player for OS X"
   s.date = '2009-12-18'
   s.email = 'deepak.jois@gmail.com'
@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.add_dependency('eventmachine', '>=0.12.10')
   s.add_dependency('json_pure', '>=1.2.0')
   s.add_dependency('daemons', '>=1.0.10')
+  s.add_dependency('thor', '>=0.12.0')
   s.authors = ["Deepak Jois"]
   # = MANIFEST =
   s.files = %w[
@@ -26,9 +27,7 @@ Gem::Specification.new do |s|
     ext/player.c
     ext/query.c
     lib/dhun.rb
-    lib/dhun/command.rb
-    lib/dhun/controller.rb
-    lib/dhun/dhun_client.rb
+    lib/dhun/client.rb
     lib/dhun/dhun_server.rb
     lib/dhun/handler.rb
     lib/dhun/logger.rb

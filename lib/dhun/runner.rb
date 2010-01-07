@@ -10,7 +10,7 @@ module Dhun
     desc "start_server","starts the Dhun Server."
     method_option :socket, :type => :string, :default => "/tmp/dhun.sock", :aliases => '-s'
     method_option :log, :type => :string, :default => "/tmp/dhun.log", :aliases => '-l'
-    method_option :daemonize, :type => :boolean, :default => false, :aliases => '-d'
+    method_option :daemonize, :type => :boolean, :default => true, :aliases => '-d'
     method_option :debug, :type => :boolean, :default => false, :aliases => '-D'
     def start_server
       unless server_running?(options[:socket],:silent)
@@ -112,7 +112,16 @@ module Dhun
       if files
         #prompt for index of song to play and return it in pretty format. cough.
         answer = ask "Enter index to queue",:yellow
-        indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
+        indexes =
+        case
+        when answer.include?(',')
+          answer.split(',')
+        when answer.include?(' ')
+          answer.split(' ')
+        else
+          0..(files.size - 1)
+        end
+        # indexes = answer.include?(',') ? answer.split(',') : answer.split(' ')
         selected = indexes.map { |index| files[index.to_i] }
         say "selected:",:green
         say_list selected
@@ -123,12 +132,12 @@ module Dhun
 
     desc "next COUNT", "skips to next song by COUNT"
     def next(count=1)
-      return_response(:next,[],count)
+      return_response(:next,[],count.to_i)
     end
     
     desc "prev COUNT", "skips to previous song by COUNT"
     def prev(count=1)
-      return_response(:prev,[],count)
+      return_response(:prev,[],count.to_i)
     end
 
     desc "status", "shows the status"
