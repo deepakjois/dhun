@@ -4,61 +4,87 @@ context "the Dhun::Handler" do
   setup do
     @handler = Dhun::Handler.new
   end
+
   context "play method" do
 
-    context "with no match" do
+    context "with status :playing" do
       setup do
-        mock.instance_of(Dhun::Query).is_valid? { true }
-        mock.instance_of(Dhun::Query).execute_spotlight_query { "" }
+        stub(@handler.player).play { true }
+        stub(@handler.player).status { :playing }
       end
-      should("return No Result Found") { @handler.play('test') }.equals [:error, "No Results Found"]
+      should("return already played") { @handler.play }.equals [:error,"already playing"]
     end
 
-    context "with match" do
+    context "with status :paused" do
       setup do
-        mock.instance_of(Dhun::Query).is_valid? { true }
-        mock.instance_of(Dhun::Query).execute_spotlight_query { ['one'] }
-        stub(@handler.player).play_files(['one']) { true }
+        stub(@handler.player).play { true }
+        stub(@handler.player).status { :paused }
+      end
+      should("return resuming") { @handler.play }.equals [:success,"resuming playback"]
+    end
+
+    context "with status :stopped" do
+      setup do
+        stub(@handler.player).play { true }
+        stub(@handler.player).status { :stopped }
+      end
+      should("return playing") { @handler.play }.equals [:success,"resuming playback"]
+    end
+  end
+
+
+  context "play_files method" do
+
+    context "with no files" do
+      setup do
+        stub(@handler.player).play_files([]) { true }
+      end
+      should("return none queued") { @handler.play_files([]) }.equals [:error, "No files queued"]
+    end
+
+    context "with one file" do
+      setup do
+        stub(@handler.player).play_files(['test']) { true }
+      end
+      should("return 1 queued") do
+        @handler.play_files(['test'])
+      end.equals [:success, "1 files queued",{:files => ['test']}]
+    end
+
+    context "with two files" do
+      setup do
+        stub(@handler.player).play_files(['one','two']) { true }
       end
       should "return number of files queue" do
-        @handler.play('test')
-      end.equals [:success, "1 files queued", {:files => ['one']}]
-    end
-
-    context "with no valid query" do
-      setup { mock.instance_of(Dhun::Query).is_valid? { false } }
-      should "return invalid query" do
-        @handler.play('test')
-      end.equals [:error, "Invalid query syntax. run dhun help query"]
+        @handler.play_files(['one','two'])
+      end.equals [:success, "2 files queued", {:files => ['one','two']}]
     end
   end
 
   context "enqueue method" do
-    context "with no match" do
+    context "with no file" do
       setup do
-        mock.instance_of(Dhun::Query).is_valid? { true }
-        mock.instance_of(Dhun::Query).execute_spotlight_query { "" }
-        stub(@handler.player).enqueue("") { true }
+        stub(@handler.player).enqueue([]) { true }
       end
-      should("return No Result Found") { @handler.enqueue('test') }.equals [:error, "No Results Found"]
+      should("return none queued") { @handler.enqueue([]) }.equals [:error, "No files queued"]
     end
 
-    context "with match" do
+    context "with one file" do
       setup do
-        mock.instance_of(Dhun::Query).is_valid? { true }
-        mock.instance_of(Dhun::Query).execute_spotlight_query { ['one'] }
         stub(@handler.player).enqueue(['one']) { true }
       end
       should "return number of files queue" do
-        @handler.enqueue('test')
+        @handler.enqueue(['one'])
       end.equals [:success, "1 files queued", {:files => ['one']}]
     end
 
-    context "with no valid query" do
-      setup { mock.instance_of(Dhun::Query).is_valid? { false } }
-      should "return invalid query" do
-        @handler.enqueue('test')
-      end.equals [:error, "Invalid query syntax. run dhun help query"]
+    context "with two file" do
+      setup do
+        stub(@handler.player).enqueue(['one','two']) { true }
+      end
+      should "return number of files queue" do
+        @handler.enqueue(['one','two'])
+      end.equals [:success, "2 files queued", {:files => ['one','two']}]
     end
   end
 
@@ -152,7 +178,7 @@ context "the Dhun::Handler" do
     setup do
       stub(@handler.player).pause { true }
     end
-    
+
     context "when :playing" do
       setup do
         stub(@handler.player).status { :playing }
@@ -162,7 +188,7 @@ context "the Dhun::Handler" do
         @handler.pause
       end.equals [:success, "Dhun is paused at haunted"]
     end
-    
+
     context "when :stopped" do
       setup do
         stub(@handler.player).status { :stopped }
@@ -171,14 +197,14 @@ context "the Dhun::Handler" do
         @handler.pause
       end.equals [:error, "Dhun has already stopped"]
     end
-    
+
   end
 
   context "resume method" do
     setup do
       stub(@handler.player).resume { true }
     end
-    
+
     context "when :paused" do
       setup do
         stub(@handler.player).status { :paused }
@@ -188,7 +214,7 @@ context "the Dhun::Handler" do
         @handler.resume
       end.equals [:success, "Dhun is playing haunted"]
     end
-    
+
     context "when :stopped" do
       setup do
         stub(@handler.player).status { :stopped }
@@ -203,21 +229,21 @@ context "the Dhun::Handler" do
     setup do
       stub(@handler.player).shuffle { true }
     end
-    
+
     context "with queue" do
       setup { stub(@handler.player).queue { ['one','two'] } }
       should "return empty" do
         @handler.shuffle
       end.equals [:success, "Queue is shuffled", { :queue => ['one','two'] } ]
     end
-    
+
     context "with empty queue" do
       setup { stub(@handler.player).queue { [] } }
       should "return empty" do
         @handler.shuffle
       end.equals [:error, "Queue is empty"]
     end
-    
+
   end
 
 end
