@@ -114,10 +114,9 @@ module Dhun
         answer = ask "Enter index to queue",:yellow
         indexes =
         case
-        when answer.include?(',')
-          answer.split(',')
-        when answer.include?(' ')
-          answer.split(' ')
+        when answer.include?(',') then answer.split(',')
+        when answer.include?(' ') then answer.split(' ')
+        when answer.size == 1 then answer.to_a
         else
           0..(files.size - 1)
         end
