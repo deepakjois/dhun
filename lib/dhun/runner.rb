@@ -7,12 +7,12 @@ module Dhun
     include Thor::Actions
     include Dhun::Client
 
-    desc "start","starts the Dhun Server."
+    desc "start_server","starts the Dhun Server."
     method_option :socket, :type => :string, :default => "/tmp/dhun.sock", :aliases => '-s'
     method_option :log, :type => :string, :default => "/tmp/dhun.log", :aliases => '-l'
     method_option :daemonize, :type => :boolean, :default => false, :aliases => '-d'
     method_option :debug, :type => :boolean, :default => false, :aliases => '-D'
-    def start
+    def start_server
       unless server_running?(options[:socket],:silent)
         # Dhun::Server.new(options).start
         server_path = File.join File.dirname(__FILE__), 'server.rb'
@@ -24,8 +24,8 @@ module Dhun
       end
     end
 
-    desc "stop","stop the Dhun Server"
-    def stop
+    desc "stop_server","stop the Dhun Server"
+    def stop_server
       # send_command(:stop) if server_running?
       Dhun::Player.instance.stop
       server_path = File.join File.dirname(__FILE__), 'server.rb'
@@ -70,6 +70,7 @@ module Dhun
     end
 
     desc "play SEARCH",<<-EOF
+    play's first song on queue if SEARCH is nil/blank
     play songs that match the SEARCH. run dhun help query for filter details.
     once querying is complete, designate the index of song to play
     ex:
@@ -85,10 +86,10 @@ module Dhun
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
     def play(search=nil)
-      
+      return return_response(:play,[]) if search.nil? and options.empty?
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
-      play_enqueue(files,"Enter index to play: ",:play)
+      play_enqueue(files,"Enter index to play: ",:play_files)
     end
 
     desc "enqueue SEARCH",<<-EOF
@@ -125,9 +126,9 @@ module Dhun
 
     desc "status", "shows the status"
     def status
-      response = return_response(:status,[:now_playing,:queue])
+      response = return_response(:status,[:current,:queue])
       say "Currently Playing:",:magenta
-      say response[:now_playing],:white
+      say response[:current],:white
       say "Queue:",:cyan
       say_list response[:queue]
     end
@@ -144,6 +145,21 @@ module Dhun
       response = return_response(:shuffle,[:queue])
       say "Queue:",:cyan
       say_list response[:queue]
+    end
+
+    desc "pause", "pauses playing"
+    def pause
+      return_response(:pause,[])
+    end
+    
+    desc "resume", "resumes playing"
+    def resume
+      return_response(:resume,[])
+    end
+    
+    desc "stop", "stops playing"
+    def stop
+      return_response(:stop,[])
     end
 
 

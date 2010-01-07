@@ -8,15 +8,22 @@ context "The Dhun::Runner" do
   end
 
   context "start task" do
-    should("daemonize the server") { capture(:stdout) {@runner.start(['start','-d'])} }.matches(/Starting Dhun/)
+    should("daemonize the server") do
+      capture(:stdout) { @runner.start(['start_server','-d']) }
+    end.matches(/Starting Dhun/)
+    # should "not start if started" do
+    #   capture(:stdout) { @runner.start(['start_server','-d']) }
+    # end.matches(/is already running/)
   end
 
   context "stop task" do
-      should("stop the server") { capture(:stdout) { @runner.start(['stop']) } }.matches(/Stopping Dhun/)
+    should("stop the server") do
+      capture(:stdout) { @runner.start(['stop_server']) }
+    end.matches(/Stopping Dhun/)
   end
 
   context "query task" do
-    
+
     should("have found no results") do
       mock.instance_of(Dhun::Query).execute_spotlight_query { [] }
       capture(:stdout) {@runner.start(['query','notgoingtoquery'])}
@@ -25,15 +32,15 @@ context "The Dhun::Runner" do
     should("show description") do
       capture(:stdout) { @runner.start(['help','query']) }
     end.matches(/query SEARCH/)
-    
+
     should "show 2 results" do
-        mock.instance_of(Dhun::Query).execute_spotlight_query { ["first","second"] }
-        capture(:stdout) { @runner.start(['query','bobby']) }
+      mock.instance_of(Dhun::Query).execute_spotlight_query { ["first","second"] }
+      capture(:stdout) { @runner.start(['query','bobby']) }
     end.matches(/2 Results/)
-    
+
     should "show the results" do
-        mock.instance_of(Dhun::Query).execute_spotlight_query { ["first"] }
-        capture(:stdout) { @runner.start(['query','bobby']) }
+      mock.instance_of(Dhun::Query).execute_spotlight_query { ["first"] }
+      capture(:stdout) { @runner.start(['query','bobby']) }
     end.matches(/first/)
   end
 
@@ -48,7 +55,7 @@ context "The Dhun::Runner" do
     #   should "return invalid" do
     #     capture(:stdout) { @runner.start(['play','omg']) }.matches(/invalid/)
     #   end
-    # end    
+    # end
   end
 
 end
