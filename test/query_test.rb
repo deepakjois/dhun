@@ -28,13 +28,13 @@ context "the Dhun::Query" do
   context "create_filter_query method" do
 
     asserts("field converted to sym") do
-      @query.create_filter_query({'album' => 'test'},Dhun::Query::MD_ITEMS.clone)
+      @query.create_filter_query({'album' => 'test'},Dhun::Query::MAPPINGS.values)
     end.equals "kMDItemAlbum == 'test'wc"
 
     context "with two queries" do
       setup do
         q = {:genre => 'techno', :album => 'test'}
-        @query.create_filter_query(q,Dhun::Query::MD_ITEMS.clone)
+        @query.create_filter_query(q,Dhun::Query::MAPPINGS.values)
       end
       should("return album query").matches(/kMDItemAlbum == 'test'wc/)
       should("contain &&").matches(/&&/)
@@ -42,7 +42,7 @@ context "the Dhun::Query" do
     end
 
     asserts("delete keys at mappings") do
-      mappings = Dhun::Query::MD_ITEMS.clone
+      mappings = Dhun::Query::MAPPINGS.values
       @query.create_filter_query({:album => 'test'},mappings)
       mappings.include? :kMDItemAlbum
     end.equals false

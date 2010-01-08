@@ -3,16 +3,6 @@ require 'dhun_ext'
 module Dhun
   class Query
 
-    MD_ITEMS = [
-      :kMDItemAlbum,
-      :kMDItemAuthors,
-      :kMDItemComposer,
-      :kMDItemDisplayName,
-      :kMDItemFSName,
-      :kMDItemTitle,
-      :kMDItemMusicalGenre
-    ]
-
     MAPPINGS = {
       :file => :kMDItemFSName,
       :album => :kMDItemAlbum,
@@ -37,7 +27,7 @@ module Dhun
     def parse!
       return false if @query_search.nil? and @query_fields.empty?
 
-      mappings = MD_ITEMS.clone   #instantiate mappings to be picked off by query methods
+      mappings = MAPPINGS.values   #instantiate mappings to be picked off by query methods
       #create the queries
       filter_query = create_filter_query(@query_fields,mappings)
       string_query = create_string_query(@query_search,mappings)
