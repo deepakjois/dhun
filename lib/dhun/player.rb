@@ -25,17 +25,7 @@ module Dhun
       return false if @status == :playing
       return resume if @status == :paused
       @status = :playing
-      @player_thread =
-      Thread.new do
-        while  @status == :playing and !@queue.empty?
-          @current = @queue.shift
-          @logger.log "Playing #{@current}"
-          DhunExt.play_file @current
-          @history.unshift @current
-        end
-        @status = :stopped
-        @current = nil
-      end
+      @player_thread = play_thread
       return true
     end
 
@@ -123,5 +113,22 @@ module Dhun
       @logger.debug @queue
       return true
     end
+    
+    private
+    
+    # play method's player thread
+    def play_thread
+      Thread.new do
+        while  @status == :playing and !@queue.empty?
+          @current = @queue.shift
+          @logger.log "Playing #{@current}"
+          DhunExt.play_file @current
+          @history.unshift @current
+        end
+        @status = :stopped
+        @current = nil
+      end
+    end
+    
   end
 end
