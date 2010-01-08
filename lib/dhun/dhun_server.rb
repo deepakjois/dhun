@@ -36,11 +36,7 @@ module Dhun
         handler.send command
       end
       @@logger.debug "Sending #{result}"
-      if result
-        puts result.inspect.to_s
-      else
-        puts 'nil'
-      end
+      puts (result ? result.inspect.to_s : 'nil')
       send_data Dhun::Result.new(*result).to_json
     end
 

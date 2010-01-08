@@ -43,8 +43,8 @@ module Dhun
     # { :album => 'test', :booger => 'one' } => "kMDItemAlbum == 'test'wc"
     def create_filter_query(filters,mappings)
       filters.collect do |field,value|
-        next unless MAPPINGS[field.to_sym] # makes sure that field is to sym, or funky stuff happens
         md_item = MAPPINGS[field.to_sym]
+        next unless md_item # makes sure that field is to sym, or funky stuff happens
         mappings.delete md_item
         "#{md_item} == '#{value}'wc && "
       end.join.chomp(" && ")
@@ -71,8 +71,8 @@ module Dhun
     # with {:album => 'test'},"" =>
     # "kMDItemContentTypeTree == 'public.audio' && kMDItemAlbum == 'test'wc"
     def create_spotlight_query(filter_query,string_query)
-      ["kMDItemContentTypeTree == 'public.audio'", filter_query, string_query].select do
-        |s| s.length > 0
+      ["kMDItemContentTypeTree == 'public.audio'", filter_query, string_query].select do |s|
+        s.length > 0
       end.join(" && ")
     end
 
