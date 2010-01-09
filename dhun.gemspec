@@ -6,6 +6,8 @@ Gem::Specification.new do |s|
   s.email = 'deepak.jois@gmail.com'
   s.homepage = 'http://github.com/deepakjois/dhun'
   s.has_rdoc = false
+  s.add_development_dependency('riot', '>=0.10.11')
+  s.add_development_dependency('rr', '>=0.10.5')
   s.add_dependency('eventmachine', '>=0.12.10')
   s.add_dependency('json_pure', '>=1.2.0')
   s.add_dependency('daemons', '>=1.0.10')

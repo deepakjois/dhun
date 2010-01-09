@@ -38,8 +38,8 @@ module Dhun
     queries for terms longer than one word must be enclosed in ''
     ex: 'bob marley','jack johson'
     EOF
-    method_option :artist, :type => :string, :aliases => '-ar'
-    method_option :album, :type => :string, :aliases => '-al'
+    method_option :artist, :type => :string, :aliases => '-a'
+    method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
@@ -78,8 +78,8 @@ module Dhun
     ex:
       1,2,3 OR 1 2 3
     EOF
-    method_option :artist, :type => :string, :aliases => '-ar'
-    method_option :album, :type => :string, :aliases => '-al'
+    method_option :artist, :type => :string, :aliases => '-a'
+    method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
@@ -98,8 +98,8 @@ module Dhun
     ex:
       1,2,3 OR 1 2 3
     EOF
-    method_option :artist, :type => :string, :aliases => '-ar'
-    method_option :album, :type => :string, :aliases => '-al'
+    method_option :artist, :type => :string, :aliases => '-a'
+    method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
@@ -107,16 +107,21 @@ module Dhun
       
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
-      if files
+      if files and !files.empty?
         #prompt for index of song to play and return it in pretty format. cough.
-        answer = ask "Enter index to queue: ",:yellow
-        indexes =
-        case
-        when answer.include?(',') then answer.split(',')
-        when answer.include?(' ') then answer.split(' ')
-        when answer.size == 1 then answer.to_a
+        if files.size == 1 # Dont prompt if result size is 1
+          indexes = [0]
         else
-          0..(files.size - 1)
+          answer = ask "Enter index to queue (ENTER to select all): ",:yellow
+
+          indexes ||=
+          case
+          when answer.include?(',') then answer.split(',')
+          when answer.include?(' ') then answer.split(' ')
+          when answer.size >= 1 then answer.to_a
+          else
+            0..(files.size - 1)
+          end
         end
         selected = indexes.map { |index| files[index.to_i] }
         say "selected:",:green
@@ -138,6 +143,7 @@ module Dhun
 
     desc "status", "shows the status"
     def status
+      return unless server_running?
       response = return_response(:status,[:current,:queue])
       say "Currently Playing:",:magenta
       say response[:current],:white
@@ -148,15 +154,19 @@ module Dhun
     desc "history", "shows the previously played songs"
     def history
       response = return_response(:history,[:history])
-      say "History:",:cyan
-      say_list response[:history]
+      unless response
+        say "History:",:cyan
+        say_list response[:history]
+      end
     end
     
     desc "shuffle", "shuffles the queue"
     def shuffle
       response = return_response(:shuffle,[:queue])
-      say "Queue:",:cyan
-      say_list response[:queue]
+      unless response
+        say "Queue:",:cyan
+        say_list response[:queue]
+      end
     end
 
     desc "pause", "pauses playing"
@@ -209,7 +219,7 @@ module Dhun
       if is_server?(socket)
         return true
       else
-        say("Please start Dhun server first with : dhun start", :red) unless verbose == :silent
+        say("Please start Dhun server first with : dhun start_server", :red) unless verbose == :silent
         return false
       end
     end
