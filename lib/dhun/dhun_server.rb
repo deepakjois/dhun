@@ -62,7 +62,7 @@ end
 
 if ARGV
   Dhun::Logger.instance.file = ARGV[1]
-  Dhun::Logger.instance.log "Starting Duhn"
+  Dhun::Logger.instance.log "Starting Dhun"
   at_exit { remove_socket_file(ARGV[0]); stop! }
   EventMachine::run do
     puts "Dhun Server at: #{ARGV[0]}"
