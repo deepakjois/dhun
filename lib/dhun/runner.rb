@@ -38,8 +38,8 @@ module Dhun
     queries for terms longer than one word must be enclosed in ''
     ex: 'bob marley','jack johson'
     EOF
-    method_option :artist, :type => :string, :aliases => '-ar'
-    method_option :album, :type => :string, :aliases => '-al'
+    method_option :artist, :type => :string, :aliases => '-a'
+    method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
@@ -78,8 +78,8 @@ module Dhun
     ex:
       1,2,3 OR 1 2 3
     EOF
-    method_option :artist, :type => :string, :aliases => '-ar'
-    method_option :album, :type => :string, :aliases => '-al'
+    method_option :artist, :type => :string, :aliases => '-a'
+    method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
@@ -98,8 +98,8 @@ module Dhun
     ex:
       1,2,3 OR 1 2 3
     EOF
-    method_option :artist, :type => :string, :aliases => '-ar'
-    method_option :album, :type => :string, :aliases => '-al'
+    method_option :artist, :type => :string, :aliases => '-a'
+    method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
