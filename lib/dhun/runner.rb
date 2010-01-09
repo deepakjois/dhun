@@ -154,15 +154,19 @@ module Dhun
     desc "history", "shows the previously played songs"
     def history
       response = return_response(:history,[:history])
-      say "History:",:cyan
-      say_list response[:history]
+      unless response
+        say "History:",:cyan
+        say_list response[:history]
+      end
     end
     
     desc "shuffle", "shuffles the queue"
     def shuffle
       response = return_response(:shuffle,[:queue])
-      say "Queue:",:cyan
-      say_list response[:queue]
+      unless response
+        say "Queue:",:cyan
+        say_list response[:queue]
+      end
     end
 
     desc "pause", "pauses playing"
