@@ -112,7 +112,7 @@ module Dhun
         if files.size == 1 # Dont prompt if result size is 1
           indexes = [0]
         else
-          answer = ask "Enter index to queue: ",:yellow
+          answer = ask "Enter index to queue (ENTER to select all): ",:yellow
 
           indexes ||=
           case
