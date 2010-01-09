@@ -143,6 +143,7 @@ module Dhun
 
     desc "status", "shows the status"
     def status
+      return unless server_running?
       response = return_response(:status,[:current,:queue])
       say "Currently Playing:",:magenta
       say response[:current],:white
@@ -214,7 +215,7 @@ module Dhun
       if is_server?(socket)
         return true
       else
-        say("Please start Dhun server first with : dhun start", :red) unless verbose == :silent
+        say("Please start Dhun server first with : dhun start_server", :red) unless verbose == :silent
         return false
       end
     end
