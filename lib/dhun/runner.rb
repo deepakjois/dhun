@@ -118,7 +118,7 @@ module Dhun
           case
           when answer.include?(',') then answer.split(',')
           when answer.include?(' ') then answer.split(' ')
-          when answer.size == 1 then answer.to_a
+          when answer.size >= 1 then answer.to_a
           else
             0..(files.size - 1)
           end
