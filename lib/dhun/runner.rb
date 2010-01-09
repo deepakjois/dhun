@@ -107,16 +107,21 @@ module Dhun
       
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
-      if files
+      if files and !files.empty?
         #prompt for index of song to play and return it in pretty format. cough.
-        answer = ask "Enter index to queue: ",:yellow
-        indexes =
-        case
-        when answer.include?(',') then answer.split(',')
-        when answer.include?(' ') then answer.split(' ')
-        when answer.size == 1 then answer.to_a
+        if files.size == 1 # Dont prompt if result size is 1
+          indexes = [0]
         else
-          0..(files.size - 1)
+          answer = ask "Enter index to queue: ",:yellow
+
+          indexes ||=
+          case
+          when answer.include?(',') then answer.split(',')
+          when answer.include?(' ') then answer.split(' ')
+          when answer.size == 1 then answer.to_a
+          else
+            0..(files.size - 1)
+          end
         end
         selected = indexes.map { |index| files[index.to_i] }
         say "selected:",:green
