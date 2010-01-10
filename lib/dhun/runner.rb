@@ -7,6 +7,10 @@ module Dhun
     include Thor::Actions
     include Dhun::Client
 
+    def self.banner(task)
+      task.formatted_usage(self).gsub("dhun:runner:","dhun ")
+    end
+
     desc "start_server","starts the Dhun Server."
     method_option :socket, :type => :string, :default => "/tmp/dhun.sock", :aliases => '-s'
     method_option :log, :type => :string, :default => "/tmp/dhun.log", :aliases => '-l'
