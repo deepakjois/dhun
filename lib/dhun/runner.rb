@@ -14,12 +14,12 @@ module Dhun
     desc "start_server","Starts the Dhun Server."
     method_option :socket, :type => :string, :default => "/tmp/dhun.sock", :aliases => '-s'
     method_option :log, :type => :string, :default => "/tmp/dhun.log", :aliases => '-l'
-    method_option :daemonize, :type => :boolean, :default => true, :aliases => '-d'
+    method_option :foreground, :type => :boolean, :default => false, :aliases => '-f'
     method_option :debug, :type => :boolean, :default => false, :aliases => '-D'
     def start_server
       unless server_running?(options[:socket],:silent)
         server_path = File.join File.dirname(__FILE__), 'server.rb'
-        cmd = options[:daemonize] ? 'start' : 'run'
+        cmd = options[:foreground] ? 'run' : 'start'
         say "Starting Dhun", :green
         system("ruby #{server_path} #{cmd} -- #{options[:socket]} #{options[:log]}")
       else

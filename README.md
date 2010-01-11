@@ -28,9 +28,9 @@ the `gem` command to compile the native extensions.
 
 this runs the Dhun server as a daemon by default. to not run it as a daemon:
 
-    $ dhun start_server --daemonize false
+    $ dhun start_server --foreground
     or
-    $ dhun start_server -d false
+    $ dhun start_server -f
 
 See `dhun help start_server for more information`
 
