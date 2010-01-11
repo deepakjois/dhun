@@ -133,7 +133,7 @@ module Dhun
     desc "history", "Shows the previously played songs"
     def history
       response = return_response(:history,[:history])
-      unless response
+      if response[:history]
         say "History:",:cyan
         say_list response[:history]
       end
@@ -142,7 +142,7 @@ module Dhun
     desc "shuffle", "Shuffles the queue"
     def shuffle
       response = return_response(:shuffle,[:queue])
-      unless response
+      if response[:queue]
         say "Queue:",:cyan
         say_list response[:queue]
       end
