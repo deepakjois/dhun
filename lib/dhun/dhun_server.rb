@@ -58,6 +58,7 @@ def remove_socket_file(socket)
 end
 
 def stop!
+  Dhun::Player.instance.stop
   Dhun::Logger.instance.log "Stopping Dhun"
   EventMachine.stop if EventMachine.reactor_running?
   exit

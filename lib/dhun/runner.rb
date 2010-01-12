@@ -30,7 +30,6 @@ module Dhun
 
     desc "stop_server","Stop the Dhun Server"
     def stop_server
-      Dhun::Player.instance.stop
       server_path = File.join File.dirname(__FILE__), 'server.rb'
       system("ruby #{server_path} stop")
       say "Stopping Dhun", :green
