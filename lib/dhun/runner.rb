@@ -36,7 +36,8 @@ module Dhun
       say "Stopping Dhun", :green
     end
 
-    desc "query SEARCH","Show files matching query. See docs for details on query syntax"
+    desc "query SEARCH","Show files matching query. ex: dhun query bob,'the marley'
+    \t\t\t See docs for details on query syntax"
     method_option :artist, :type => :string, :aliases => '-a'
     method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
@@ -66,7 +67,8 @@ module Dhun
       files
     end
 
-    desc "play SEARCH","Play songs matching query. See docs for details on query syntax"
+    desc "play SEARCH","Play songs matching query. ex: dhun play bob,'the marley'
+    \t\t\t See docs for details on query syntax"
     method_option :artist, :type => :string, :aliases => '-a'
     method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
@@ -77,7 +79,8 @@ module Dhun
       invoke :enqueue, [search], options
     end
 
-    desc "enqueue SEARCH","Enqueue songs matching query. See docs for details on query syntax"
+    desc "enqueue SEARCH","Enqueue songs matching query. ex: dhun enqueue bob,'the marley'
+    \t\t\t See docs for details on query syntax"
     method_option :artist, :type => :string, :aliases => '-a'
     method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
