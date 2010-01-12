@@ -19,13 +19,7 @@ put the binaries in the right place. You will need to have XCode installed for
 the `gem` command to compile the native extensions.
 
     $ gem sources -a http://gemcutter.org
-    $ gem install dhun
-    
-
-this fork(achiu/dhun) can be installed via rake
-
-    $ sudo rake install
-    
+    $ gem install dhun    
 
 ### Starting Dhun
 
@@ -34,9 +28,9 @@ this fork(achiu/dhun) can be installed via rake
 
 this runs the Dhun server as a daemon by default. to not run it as a daemon:
 
-    $ dhun start_server --daemonize false
+    $ dhun start_server --foreground
     or
-    $ dhun start_server -d false
+    $ dhun start_server -f
 
 See `dhun help start_server for more information`
 

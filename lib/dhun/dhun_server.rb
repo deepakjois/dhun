@@ -9,19 +9,25 @@ module Dhun
 
     def post_init
       #puts "-- client connected"
+      @data = ""
     end
 
     def receive_data(data)
       begin
         @@logger.debug data
-        puts data.inspect.to_s
-        cmd = JSON.parse(data)
-        handle_client_request cmd["command"], cmd["arguments"]
+        @data << data
+        # puts data.inspect.to_s
+        cmd = begin 
+                JSON.parse(@data)
+              rescue
+                @@logger.log $!
+                nil
+              end
+        handle_client_request cmd["command"], cmd["arguments"] if cmd
       rescue StandardError => ex
         @@logger.log ex.message
         @@logger.log ex.backtrace
         send_data Dhun::Result.new(:error,ex.message).to_json
-      ensure
         close_connection true
       end
     end
@@ -38,6 +44,7 @@ module Dhun
       @@logger.debug "Sending #{result}"
       puts (result ? result.inspect.to_s : 'nil')
       send_data Dhun::Result.new(*result).to_json
+      close_connection true
     end
 
     def unbind

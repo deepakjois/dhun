@@ -11,15 +11,16 @@ module Dhun
       task.formatted_usage(self).gsub("dhun:runner:","dhun ")
     end
 
-    desc "start_server","starts the Dhun Server."
+
+    desc "start_server","Starts the Dhun Server."
     method_option :socket, :type => :string, :default => "/tmp/dhun.sock", :aliases => '-s'
     method_option :log, :type => :string, :default => "/tmp/dhun.log", :aliases => '-l'
-    method_option :daemonize, :type => :boolean, :default => true, :aliases => '-d'
+    method_option :foreground, :type => :boolean, :default => false, :aliases => '-f'
     method_option :debug, :type => :boolean, :default => false, :aliases => '-D'
     def start_server
       unless server_running?(options[:socket],:silent)
         server_path = File.join File.dirname(__FILE__), 'server.rb'
-        cmd = options[:daemonize] ? 'start' : 'run'
+        cmd = options[:foreground] ? 'run' : 'start'
         say "Starting Dhun", :green
         system("ruby #{server_path} #{cmd} -- #{options[:socket]} #{options[:log]}")
       else
@@ -27,7 +28,7 @@ module Dhun
       end
     end
 
-    desc "stop_server","stop the Dhun Server"
+    desc "stop_server","Stop the Dhun Server"
     def stop_server
       Dhun::Player.instance.stop
       server_path = File.join File.dirname(__FILE__), 'server.rb'
@@ -35,13 +36,7 @@ module Dhun
       say "Stopping Dhun", :green
     end
 
-    desc "query SEARCH",<<-EOF
-    query for selected songs via search term and optional fields.
-    multipler search terms must be seperate by ','
-    ex: bob,marley,johnson
-    queries for terms longer than one word must be enclosed in ''
-    ex: 'bob marley','jack johson'
-    EOF
+    desc "query SEARCH","Show files matching query. See docs for details on query syntax"
     method_option :artist, :type => :string, :aliases => '-a'
     method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
@@ -66,22 +61,12 @@ module Dhun
           say_list files
         end
       else
-        say "Invalid Query Syntax. Run dhun help query for syntax", :yellow
+        say "Invalid Query Syntax. See docs for correct syntax", :yellow
       end
       files
     end
 
-    desc "play SEARCH",<<-EOF
-    play's first song on queue if SEARCH is nil/blank
-    play songs that match the SEARCH. run dhun help query for filter details.
-    once querying is complete, designate the index of song to play
-    ex:
-      Enter song index to play:
-      1
-    multiple indexes can be seperate by ',' or spaces
-    ex:
-      1,2,3 OR 1 2 3
-    EOF
+    desc "play SEARCH","Play songs matching query. See docs for details on query syntax"
     method_option :artist, :type => :string, :aliases => '-a'
     method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
@@ -92,16 +77,7 @@ module Dhun
       invoke :enqueue, [search], options
     end
 
-    desc "enqueue SEARCH",<<-EOF
-    enqueue songs that match the SEARCH. run dhun help query for filter details.
-    once querying is complete, designate the index of song to enqueue
-    ex:
-      Enter song index to enqueue:
-      1
-    multiple indexes can be seperate by ',' or spaces
-    ex:
-      1,2,3 OR 1 2 3
-    EOF
+    desc "enqueue SEARCH","Enqueue songs matching query. See docs for details on query syntax"
     method_option :artist, :type => :string, :aliases => '-a'
     method_option :album, :type => :string, :aliases => '-l'
     method_option :genre, :type => :string, :aliases => '-g'
@@ -135,17 +111,17 @@ module Dhun
       end
     end
 
-    desc "next COUNT", "skips to next song by COUNT"
+    desc "next COUNT", "Skips to next song by COUNT"
     def next(count=1)
       return_response(:next,[],count.to_i)
     end
     
-    desc "prev COUNT", "skips to previous song by COUNT"
+    desc "prev COUNT", "Skips to previous song by COUNT"
     def prev(count=1)
       return_response(:prev,[],count.to_i)
     end
 
-    desc "status", "shows the status"
+    desc "status", "Shows the status"
     def status
       return unless server_running?
       response = return_response(:status,[:current,:queue])
@@ -155,35 +131,35 @@ module Dhun
       say_list response[:queue]
     end
 
-    desc "history", "shows the previously played songs"
+    desc "history", "Shows the previously played songs"
     def history
       response = return_response(:history,[:history])
-      unless response
+      if response[:history]
         say "History:",:cyan
         say_list response[:history]
       end
     end
     
-    desc "shuffle", "shuffles the queue"
+    desc "shuffle", "Shuffles the queue"
     def shuffle
       response = return_response(:shuffle,[:queue])
-      unless response
+      if response[:queue]
         say "Queue:",:cyan
         say_list response[:queue]
       end
     end
 
-    desc "pause", "pauses playing"
+    desc "pause", "Pauses playing"
     def pause
       return_response(:pause,[])
     end
     
-    desc "resume", "resumes playing"
+    desc "resume", "Resumes playing"
     def resume
       return_response(:resume,[])
     end
     
-    desc "stop", "stops playing"
+    desc "stop", "Stops playing"
     def stop
       return_response(:stop,[])
     end
