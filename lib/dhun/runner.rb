@@ -75,6 +75,7 @@ module Dhun
     method_option :title, :type => :string, :aliases => '-t'
     def play(search=nil)
       return return_response(:play,[]) if search.nil? and options.empty?
+      return_response(:clear,[])
       invoke :enqueue, [search], options
     end
 
