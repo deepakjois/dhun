@@ -89,7 +89,7 @@ context "the Dhun::Handler" do
     context "with next track" do
       setup do
         stub(@handler.player).current { 'two' }
-        stub(@handler.player).next { true }
+        stub(@handler.player).next { 'two' }
       end
       should("show next track") { @handler.next }.equals [:success, "Dhun is playing two"]
     end
@@ -104,7 +104,7 @@ context "the Dhun::Handler" do
     context "with prev track" do
       setup do
         stub(@handler.player).current { 'two' }
-        stub(@handler.player).prev { true }
+        stub(@handler.player).prev { 'two' }
       end
       should("show prev track") { @handler.prev }.equals [:success, "Dhun is playing two"]
     end

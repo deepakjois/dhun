@@ -43,15 +43,11 @@ module Dhun
     end
     
     def next(skip_length=1)
-      perform_action :next,skip_length,
-      :success => "Dhun is playing #{@player.current}",
-      :error => "Not enough tracks in queue"
+      next_prev :next, 'queue'
     end
 
     def prev(skip_length=1)
-      perform_action :prev, skip_length,
-      :success => "Dhun is playing #{@player.current}",
-      :error => "Not enough tracks in history"
+      next_prev :prev, 'history'
     end
     
     def shuffle
@@ -89,6 +85,13 @@ module Dhun
       result = arg.nil? ? @player.send(action) : @player.send(action,arg)
       return [:error,message[:error]].flatten unless result
       return [:success,message[:success]].flatten
+    end
+
+    #next and previous method
+    def next_prev(action,message)
+      track = @player.send(action)
+      return [:success, "Dhun is playing #{track}"] if track
+      return [:error, "Not enough tracks in #{message}"]
     end
 
   end
