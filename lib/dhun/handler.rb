@@ -60,6 +60,13 @@ module Dhun
       :error => 'Dhun cannot shuffle(queue empty, same songs)'
     end
 
+    def clear
+      perform_action :clear,nil,
+      :success => "Queue is cleared",
+      :error => "Queue is not cleared"
+    end
+
+
     def status
       status_msg =
       case @player.status
