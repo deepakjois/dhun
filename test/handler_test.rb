@@ -180,4 +180,11 @@ context "the Dhun::Handler" do
     end
   end
 
+  context "clear method" do
+    setup do
+      stub(@handler.player).clear { true }
+    end
+    should("return cleared") { @handler.clear }.equals [:success,'Queue is cleared']
+  end
+
 end
