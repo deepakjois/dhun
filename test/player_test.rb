@@ -213,4 +213,13 @@ context "the Dhun::Player" do
   end
 
 
+  context "clear method" do
+    setup do
+      stub(@player).stop { true }
+      @player.queue = ['one','two']
+      @player.clear
+    end
+    asserts("queue is cleared") { @player.queue }.equals []
+  end
+
 end

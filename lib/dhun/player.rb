@@ -18,6 +18,12 @@ module Dhun
       files.each { |f| self.queue.push f }; play
       return true
     end
+    
+    # clear the queue and stops playback
+    def clear
+      stop ; @queue.clear
+      return true
+    end
 
     # commence playback
     def play
