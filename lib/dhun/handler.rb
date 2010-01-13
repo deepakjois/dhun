@@ -43,11 +43,11 @@ module Dhun
     end
     
     def next(skip_length=1)
-      next_prev :next, 'queue'
+      next_prev :next, 'queue',skip_length
     end
 
     def prev(skip_length=1)
-      next_prev :prev, 'history'
+      next_prev :prev, 'history',skip_length
     end
     
     def shuffle
@@ -88,8 +88,8 @@ module Dhun
     end
 
     #next and previous method
-    def next_prev(action,message)
-      track = @player.send(action)
+    def next_prev(action,message,skip_length)
+      track = @player.send(action,skip_length)
       return [:success, "Dhun is playing #{track}"] if track
       return [:error, "Not enough tracks in #{message}"]
     end
