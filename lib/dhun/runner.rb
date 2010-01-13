@@ -91,21 +91,8 @@ module Dhun
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
       if files and !files.empty?
-        #prompt for index of song to play and return it in pretty format. cough.
-        if files.size == 1 # Dont prompt if result size is 1
-          indexes = [0]
-        else
-          answer = ask "Enter index to queue (ENTER to select all): ",:yellow
-
-          indexes ||=
-          case
-          when answer.include?(',') then answer.split(',')
-          when answer.include?(' ') then answer.split(' ')
-          when answer.size >= 1 then answer.to_a
-          else
-            0..(files.size - 1)
-          end
-        end
+        indexes = files.size == 1 ? [0] : enqueue_prompt(files.size)
+        
         selected = indexes.map { |index| files[index.to_i] }
         say "selected:",:green
         say_list selected
@@ -169,6 +156,21 @@ module Dhun
 
 
     private
+
+    #prompt for enqueue
+    def enqueue_prompt(size)
+      answer = ask "Enter index to queue (ENTER to select all): ",:yellow
+      case
+      when answer.include?(',')
+        return answer.split(',')
+      when answer.include?(' ')
+        return answer.split(' ')
+      when answer.size >= 1
+        return answer.to_a
+      else
+        return 0..(size - 1)
+      end
+    end
 
     # sends command to dhun client
     def send_command(command,arguments=[])
