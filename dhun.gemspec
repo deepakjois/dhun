@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   s.name = 'dhun'
   s.version = '0.6.0'
   s.summary = "Minimalist music player for OS X"
-  s.date = '2009-12-18'
+  s.date = '2010-01-12'
   s.email = 'deepak.jois@gmail.com'
   s.homepage = 'http://github.com/deepakjois/dhun'
   s.has_rdoc = false
@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.authors = ["Deepak Jois"]
   # = MANIFEST =
   s.files = %w[
+    CONTRIBUTORS
     FIX.md
     LICENSE.txt
     README.md
