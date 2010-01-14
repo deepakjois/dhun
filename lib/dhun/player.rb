@@ -4,11 +4,10 @@ module Dhun
   class Player
     include Singleton
 
-    attr_accessor :queue,:history,:status,:current,:logger
+    attr_accessor :queue,:history,:status,:current
 
     def initialize
       @queue,@history = [],[]
-      @logger = Logger.instance
       @status = :stopped
     end
 
@@ -41,7 +40,6 @@ module Dhun
       if @status == :playing
         @status = :paused
         DhunExt.pause
-        @logger.debug "pause"
         return true
       end
       return false
@@ -53,7 +51,6 @@ module Dhun
       if @status == :paused
         @status = :playing
         DhunExt.resume
-        @logger.debug "resume"
         return true
       end
       return false
@@ -67,7 +64,6 @@ module Dhun
         DhunExt.stop
         # Wait for @player_thread to exit cleanly
         @player_thread.join unless @player_thread.nil?
-        @logger.debug "Stopped"
         return true
       end
       return false
@@ -77,7 +73,6 @@ module Dhun
     # returns next_track or false if invalid
     def next(skip_length = 1)
       unless skip_length > @queue.size
-        @logger.debug "next invoked"
         stop
         @queue.shift(skip_length - 1) #skip_length returns starting with first on queue.
         next_track = @queue.first
@@ -97,7 +92,6 @@ module Dhun
         stop ; skip_length += 1
       end
       unless skip_length > @history.size
-        @logger.debug "previous invoked"
         tracks = @history.shift skip_length
         tracks.each { |track| @queue.unshift track }
         previous = @queue.first
@@ -116,7 +110,6 @@ module Dhun
       while q == @queue
         @queue.size.downto(1) { |n| @queue.push @queue.delete_at(rand(n)) }
       end
-      @logger.debug @queue
       return true
     end
     
@@ -127,7 +120,6 @@ module Dhun
       Thread.new do
         while  @status == :playing and !@queue.empty?
           @current = @queue.shift
-          @logger.log "Playing #{@current}"
           DhunExt.play_file @current
           @history.unshift @current
         end

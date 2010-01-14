@@ -2,15 +2,12 @@ require File.expand_path("test_helper", File.dirname(__FILE__))
 
 context "the Dhun::Player" do
   setup do
-    stub(Dhun::Logger.instance).log(anything) { true }
-    stub(Dhun::Logger.instance).debug(anything) { true }
     @player = Dhun::Player.instance
   end
 
   context "on initialize" do
     asserts("assigns queue").assigns(:queue)
     asserts("assigns history").assigns(:history)
-    asserts("assigns logger").assigns(:logger)
   end
 
   context "play method" do
