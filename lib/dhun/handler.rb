@@ -2,10 +2,10 @@ require 'json'
 module Dhun
   # Handling commands sent by Dhun client
   class Handler
-    attr_reader :player
+    attr_accessor :player
 
-    def initialize
-      @player = Dhun::Player.instance
+    def initialize(player = Dhun::Player.instance)
+      @player = player
     end
 
     def play

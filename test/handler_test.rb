@@ -2,7 +2,8 @@ require File.expand_path("test_helper", File.dirname(__FILE__))
 
 context "the Dhun::Handler" do
   setup do
-    @handler = Dhun::Handler.new
+    @player = Dhun::Player.clone
+    @handler = Dhun::Handler.new @player.instance
   end
 
   context "play method" do
