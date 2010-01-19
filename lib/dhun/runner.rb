@@ -46,7 +46,7 @@ module Dhun
       search = search.nil? ? nil : search.split(',')
       query = Dhun::Query.new(search,options)
       if query.is_valid?
-        
+
         #make the prompt pretty. i think.
         opts = options.collect {|field,value| "#{field}:#{value}" }.join(" ")
         term = search.nil? ? '[nil]' : search.join(",")
@@ -87,16 +87,16 @@ module Dhun
     method_option :file, :type => :string, :aliases => '-f'
     method_option :title, :type => :string, :aliases => '-t'
     def enqueue(search=nil)
-      
+
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
       if files and !files.empty?
         indexes = files.size == 1 ? [0] : enqueue_prompt(files.size)
-        
+
         selected = indexes.map { |index| files[index.to_i] }
         say "selected:",:green
         say_list selected
-        
+
         return_response(:enqueue,nil,selected)
       end
     end
@@ -105,7 +105,7 @@ module Dhun
     def next(count=1)
       return_response(:next,[],count.to_i)
     end
-    
+
     desc "prev COUNT", "Skips to previous song by COUNT"
     def prev(count=1)
       return_response(:prev,[],count.to_i)
@@ -113,8 +113,8 @@ module Dhun
 
     desc "status", "Shows the status"
     def status
-      return unless server_running?
       response = return_response(:status,[:current,:queue])
+      return false unless response
       say "Currently Playing:",:magenta
       say response[:current],:white
       say "Queue:",:cyan
@@ -124,101 +124,100 @@ module Dhun
     desc "history", "Shows the previously played songs"
     def history
       response = return_response(:history,[:history])
-      if response[:history]
-        say "History:",:cyan
-        say_list response[:history]
-      end
+      return false unless response
+      say "History:",:cyan
+      say_list response[:history]
     end
-    
+
     desc "shuffle", "Shuffles the queue"
     def shuffle
       response = return_response(:shuffle,[:queue])
-      if response[:queue]
-        say "Queue:",:cyan
-        say_list response[:queue]
-      end
+      return false unless response
+      say "Queue:",:cyan
+      say_list response[:queue]
     end
 
     desc "pause", "Pauses playing"
     def pause
       return_response(:pause,[])
     end
-    
+
     desc "resume", "Resumes playing"
     def resume
       return_response(:resume,[])
     end
-    
+
     desc "stop", "Stops playing"
     def stop
       return_response(:stop,[])
     end
 
+    no_tasks do
 
-    private
-
-    #prompt for enqueue
-    def enqueue_prompt(size)
-      answer = ask "Enter index to queue (ENTER to select all): ",:yellow
-      case
-      when answer.include?(',')
-        return answer.split(',')
-      when answer.include?(' ')
-        return answer.split(' ')
-      when answer.size >= 1
-        return answer.to_a
-      else
-        return 0..(size - 1)
-      end
-    end
-
-    # sends command to dhun client
-    def send_command(command,arguments=[])
-      cmd = { "command" => command.to_s, "arguments" => arguments }.to_json
-      send_message(cmd,"/tmp/dhun.sock")
-    end
-
-    # send command to the server and retrieve response.
-    def get_response(command,arguments=[])
-      if server_running?
-          resp = send_command(command,arguments)
-          return Dhun::Result.from_json_str(resp)
-      end
-    end
-    
-    # prints out list with each index value
-    # in pretty format! (contrasting colors)
-    def say_list(list)
-      list.each_with_index do |item,index|
-        color = index.even? ? :white : :cyan
-        say("#{index} : #{item}",color)
-      end
-    end
-
-    # check to see if Dhun Server is running.
-    # asks to start Dhun server if not
-    # takes argument :silent to quiet its output.
-    # need to make the socket choices more flexible
-    def server_running?(socket = "/tmp/dhun.sock",verbose = :verbose)
-      socket ||= "/tmp/dhun.sock"
-      if is_server?(socket)
-        return true
-      else
-        say("Please start Dhun server first with : dhun start_server", :red) unless verbose == :silent
-        return false
-      end
-    end
-    
-    #send out the command to server and see what it has to say.
-    def return_response(action,keys,argument=[])
-      response = get_response(action,argument)
-      if response
-        color = response.success? ? :red : :cyan
-        say response[:message], color
-        if keys
-          return keys.inject({}) {|base,key| base[key.to_sym] = response[key.to_sym] ; base}
+      #send out the command to server and see what it has to say.
+      def return_response(action,keys,argument=[])
+        response = get_response(action,argument)
+        if response
+          color = response.success? ? :red : :cyan
+          say response[:message], color
+          if keys
+            return keys.inject({}) {|base,key| base[key.to_sym] = response[key.to_sym] ; base}
+          end
         end
       end
+
+      # send command to the server and retrieve response.
+      def get_response(command,arguments=[])
+        if server_running?
+          resp = send_command(command,arguments)
+          return Dhun::Result.from_json_str(resp)
+        end
+      end
+
+      # sends command to dhun client
+      def send_command(command,arguments=[])
+        cmd = { "command" => command.to_s, "arguments" => arguments }.to_json
+        send_message(cmd,"/tmp/dhun.sock")
+      end
+
+      # check to see if Dhun Server is running.
+      # asks to start Dhun server if not
+      # takes argument :silent to quiet its output.
+      # need to make the socket choices more flexible
+      def server_running?(socket = "/tmp/dhun.sock",verbose = :verbose)
+        socket ||= "/tmp/dhun.sock"
+        if is_server?(socket)
+          return true
+        else
+          say("Please start Dhun server first with : dhun start_server", :red) unless verbose == :silent
+          return false
+        end
+      end
+
+      #prompt for enqueue
+      def enqueue_prompt(size)
+        answer = ask "Enter index to queue (ENTER to select all): ",:yellow
+        case
+        when answer.include?(',')
+          return answer.split(',')
+        when answer.include?(' ')
+          return answer.split(' ')
+        when answer.size >= 1
+          return answer.to_a
+        else
+          return 0..(size - 1)
+        end
+      end
+
+      # prints out list with each index value
+      # in pretty format! (contrasting colors)
+      def say_list(list)
+        list.each_with_index do |item,index|
+          color = index.even? ? :white : :cyan
+          say("#{index} : #{item}",color)
+        end
+      end
+
     end
 
   end
