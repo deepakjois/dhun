@@ -91,9 +91,9 @@ module Dhun
       # invoke query command and return us all the files found.
       files = invoke :query, [search], options
       if files and !files.empty?
-        indexes = files.size == 1 ? [0] : enqueue_prompt(files.size)
+        indexes = files.size == 1 ? [1] : enqueue_prompt(files.size)
 
-        selected = indexes.map { |index| files[index.to_i] }
+        selected = indexes.map { |index| files[index.to_i-1] }
         say "selected:",:green
         say_list selected
 
@@ -214,7 +214,7 @@ module Dhun
       def say_list(list)
         list.each_with_index do |item,index|
           color = index.even? ? :white : :cyan
-          say("#{index} : #{item}",color)
+          say("#{index+1} : #{item}",color)
         end
       end
 
