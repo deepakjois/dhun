@@ -142,23 +142,26 @@ context "The Dhun::Runner" do
   context "save task" do
     setup do
       mock.instance_of(@runner).server_running? { true }
-      mock.instance_of(@runner).return_response(:status,[:current,:queue]) { {:current => 'one', :queue => ['two']}}
+      mock.instance_of(@runner).return_response(:status,[:queue]) { {:queue => ['one','two']} }
     end
     context "with no save path" do
       should("ask for path") {  capture(:stdout) { @runner.start(['save']) } }.matches(/path/)
     end
     context "with path" do
       setup do
-        @runner.start(['save','/tmp/test.pls'])
+        capture(:stdout) { @runner.start(['save','/tmp/test.pls']) }
         File.exists?('/tmp/test.pls')
       end
       asserts("File is saved").equals true
-      asserts("deleted") { FileUtils.rm('/tmp/test.pls') if topic }.equals true
+      should("contain playlist") { File.read '/tmp/test.pls' }.matches(/one\ntwo/)
+      asserts("deleted") { FileUtils.rm('/tmp/test.pls') if topic }.equals ["/tmp/test.pls"]
     end
   end
 
   context "load task" do
-
+    setup do
+      mock.instance_of(@runner).server_running? { true }
+    end
   end
 
 end

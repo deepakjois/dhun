@@ -155,15 +155,22 @@ module Dhun
     desc "save PATH", "saves the playlist"
     def save(path=nil)
       unless path
-        say "Please include a path for the playlist"
+        say "Please include a path for the playlist", :red
         return false
       end
-
+      create_file path, playlist_save
     end
 
     no_tasks do
 
-      #send out the command to server and see what it has to say.
+      # Writes the queue to the playlist. 
+      # This is overloaded by other playlist modules
+      def playlist_save
+        resp = return_response(:status,[:queue])
+        resp[:queue].collect { |song| song }.join("\n")
+      end
+      
+      # send out the command to server and see what it has to say.
       def return_response(action,keys,argument=[])
         response = get_response(action,argument)
         if response
