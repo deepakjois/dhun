@@ -54,7 +54,7 @@ context "The Dhun::Runner" do
       should("call clear and enqueue") {  capture(:stdout) {@runner.start(['play','testing']) } }.equals ""
     end
   end
-  
+
   context "enqueue task" do
     setup { mock.instance_of(@runner).invoke(anything,anything) { ['one','two'] } }
     context "with no search query" do
@@ -62,11 +62,11 @@ context "The Dhun::Runner" do
     end
     context "with search query" do
       setup do
-        
+
       end
     end
   end
-    
+
   context "status task" do
     context "with response" do
       setup do
@@ -83,7 +83,7 @@ context "The Dhun::Runner" do
       asserts("returns false") { @runner.start(['status']) }.equals false
     end
   end
-  
+
   context "history task" do
     context "with response" do
       setup do
@@ -98,7 +98,7 @@ context "The Dhun::Runner" do
       asserts("returns nothing") { @runner.start(['history']) }.equals false
     end
   end
-  
+
   context "shuffle task" do
     context "with response" do
       setup do
@@ -118,7 +118,7 @@ context "The Dhun::Runner" do
     setup { mock.instance_of(@runner).return_response(:next,[],1) { true } }
     asserts("sends next command") { capture(:stdout) { @runner.start(['next']) { true } } }.equals ''
   end
-  
+
   context "prev task" do
     setup { mock.instance_of(@runner).return_response(:prev,[],1) { true } }
     asserts("sends next command") { capture(:stdout) { @runner.start(['prev']) { true } } }.equals ''
@@ -128,15 +128,37 @@ context "The Dhun::Runner" do
     setup { mock.instance_of(@runner).return_response(:pause,[]) { true } }
     asserts("sends pause command") { capture(:stdout) { @runner.start(['pause']) { true } } }.equals ''
   end
-  
+
   context "resume task" do
     setup { mock.instance_of(@runner).return_response(:resume,[]) { true } }
     asserts("sends resume command") { capture(:stdout) { @runner.start(['resume']) { true } } }.equals ''
   end
-  
+
   context "stop task" do
     setup { mock.instance_of(@runner).return_response(:stop,[]) { true } }
     asserts("sends stop command") { capture(:stdout) { @runner.start(['stop']) { true } } }.equals ''
   end
-  
+
+  context "save task" do
+    setup do
+      mock.instance_of(@runner).server_running? { true }
+      mock.instance_of(@runner).return_response(:status,[:current,:queue]) { {:current => 'one', :queue => ['two']}}
+    end
+    context "with no save path" do
+      should("ask for path") {  capture(:stdout) { @runner.start(['save']) } }.matches(/path/)
+    end
+    context "with path" do
+      setup do
+        @runner.start(['save','/tmp/test.pls'])
+        File.exists?('/tmp/test.pls')
+      end
+      asserts("File is saved").equals true
+      asserts("deleted") { FileUtils.rm('/tmp/test.pls') if topic }.equals true
+    end
+  end
+
+  context "load task" do
+
+  end
+
 end

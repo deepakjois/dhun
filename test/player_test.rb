@@ -209,7 +209,6 @@ context "the Dhun::Player" do
     end
   end
 
-
   context "clear method" do
     setup do
       stub(@player).stop { true }

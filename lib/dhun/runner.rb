@@ -152,6 +152,15 @@ module Dhun
       return_response(:stop,[])
     end
 
+    desc "save PATH", "saves the playlist"
+    def save(path=nil)
+      unless path
+        say "Please include a path for the playlist"
+        return false
+      end
+
+    end
+
     no_tasks do
 
       #send out the command to server and see what it has to say.
