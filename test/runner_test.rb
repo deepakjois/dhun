@@ -145,22 +145,37 @@ context "The Dhun::Runner" do
       mock.instance_of(@runner).return_response(:status,[:queue]) { {:queue => ['one','two']} }
     end
     context "with no save path" do
-      should("ask for path") {  capture(:stdout) { @runner.start(['save']) } }.matches(/path/)
+      should("ask for path") {  capture(:stdout) { @runner.start(['save_playlist']) } }.matches(/path/)
     end
     context "with path" do
       setup do
-        capture(:stdout) { @runner.start(['save','/tmp/test.pls']) }
+        capture(:stdout) { @runner.start(['save_playlist','/tmp/test.pls']) }
         File.exists?('/tmp/test.pls')
       end
       asserts("File is saved").equals true
       should("contain playlist") { File.read '/tmp/test.pls' }.matches(/one\ntwo/)
-      asserts("deleted") { FileUtils.rm('/tmp/test.pls') if topic }.equals ["/tmp/test.pls"]
+      teardown { FileUtils.rm('/tmp/test.pls') }
     end
   end
 
   context "load task" do
     setup do
       mock.instance_of(@runner).server_running? { true }
+      mock.instance_of(@runner).return_response(:enqueue,nil,['one','two']) { true }
+    end
+    context "with valid path" do
+      setup do
+        File.open('/tmp/test.pls','w') { |f| f.write "one\ntwo" }
+        capture(:stdout) { @runner.start(['load_playlist','/tmp/test.pls']) }
+      end
+      asserts("says its loaded").matches(/loaded playlist/)
+      teardown { FileUtils.rm('/tmp/test.pls') }
+    end
+    context "with invalid path" do
+      setup do
+        capture(:stdout) { @runner.start(['load_playlist','/tmp/test.pls']) }
+      end
+      asserts("ask for valid path").matches(/invalid path/)
     end
   end
 

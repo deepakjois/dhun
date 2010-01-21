@@ -94,7 +94,7 @@ module Dhun
         indexes = files.size == 1 ? [1] : enqueue_prompt(files.size)
 
         selected = indexes.map { |index| files[index.to_i-1] }
-        say "selected:",:green
+        say "selected:",:magenta
         say_list selected
 
         return_response(:enqueue,nil,selected)
@@ -152,29 +152,44 @@ module Dhun
       return_response(:stop,[])
     end
 
-    desc "save PATH", "saves the playlist"
-    def save(path=nil)
+    desc "save_playlist PATH", "saves the playlist"
+    def save_playlist(path=nil)
       unless path
         say "Please include a path for the playlist", :red
         return false
       end
       create_file path, playlist_save
     end
+    
+    desc "load_playlist PATH", "loads the playlist"
+    def load_playlist(path=nil)
+      unless File.exists?(path) or path.nil?
+        say "invalid path! please include a valid path.", :red
+        return false
+      end
+      return_response(:enqueue,nil,playlist_load(path))
+      say "loaded playlist", :cyan
+    end
 
     no_tasks do
 
       # Writes the queue to the playlist. 
-      # This is overloaded by other playlist modules
+      # This will be overloaded by other playlist modules
       def playlist_save
-        resp = return_response(:status,[:queue])
-        resp[:queue].collect { |song| song }.join("\n")
+        return_response(:status,[:queue])[:queue].collect { |song| song }.join("\n")
+      end
+      
+      # Loads the playlist to the queue.
+      # This will be overloaded by other playlist modules.
+      def playlist_load(path)
+        File.read(path).split("\n")
       end
       
       # send out the command to server and see what it has to say.
       def return_response(action,keys,argument=[])
         response = get_response(action,argument)
         if response
-          color = response.success? ? :red : :cyan
+          color = response.success? ? :green : :red
           say response[:message], color
           if keys
             return keys.inject({}) {|base,key| base[key.to_sym] = response[key.to_sym] ; base}
