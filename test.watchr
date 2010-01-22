@@ -16,6 +16,10 @@ def run(cmd)
   system(cmd)
 end
 
+def sudo(cmd)
+  run("sudo #{cmd}")
+end
+
 def run_all_tests
   system( "rake test" )
 end
@@ -26,6 +30,7 @@ end
 watch("^lib.*/(.*)\.rb") { |m| run("ruby -rubygems test/#{m[1]}_test.rb") }
 watch("test.*/test_helper\.rb") { run_all_tests }
 watch('^test.*/(.*)_test\.rb') { |m|  run("ruby -rubygems test/#{m[1]}_test.rb") }
+watch('dhun\.gemspec') { |m| sudo("rake install") }
  
 # --------------------------------------------------
 # Signal Handling

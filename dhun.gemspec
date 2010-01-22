@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'dhun'
-  s.version = '0.6.0'
+  s.version = '0.6.1'
   s.summary = "Minimalist music player for OS X"
   s.date = '2010-01-12'
   s.email = 'deepak.jois@gmail.com'
