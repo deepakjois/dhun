@@ -13,6 +13,7 @@ context "the Dhun::Player" do
   context "play method" do
     setup do
       stub(DhunExt).play_file(anything) { true }
+      stub(@player).notify(anything,:sticky => false) { true }
       @player.queue = ['one']
     end
     should("return false if @status is :playing") do
@@ -28,10 +29,10 @@ context "the Dhun::Player" do
     context "while :stopped" do
       setup do
         @player.status = :stopped
-        @player.queue = ['test']
+        @player.queue = ['one']
         @player.play
       end
-      should("load up @history") { @player.history }.equals ['test']
+      should("load up @history") { @player.history }.equals ['one']
       should("empty queue") { @player.queue }.empty
       should("set current to nil after play") { @player.current }.nil
     end

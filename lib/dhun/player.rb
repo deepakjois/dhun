@@ -1,8 +1,11 @@
 require 'singleton'
 require 'dhun_ext'
+require 'growl'
+require 'mp3info'
 module Dhun
   class Player
     include Singleton
+    include Growl
 
     attr_accessor :queue,:history,:status,:current
 
@@ -115,11 +118,23 @@ module Dhun
     
     private
     
+    # returns song in Artist - Title format
+    # if no tags or non-existent, return its input
+    # TODO
+    def mp3_tag(song)
+      return song unless File.exists?(song)
+      Mp3Info.open(song) do |mp3| 
+        artist = mp3.tag.artist ; title = mp3.tag.title
+        (artist and title) ? "#{artist} - #{title}" : song
+      end
+    end
+    
     # play method's player thread
     def play_thread
       Thread.new do
         while  @status == :playing and !@queue.empty?
           @current = @queue.shift
+          notify mp3_tag(@current),:sticky => false
           DhunExt.play_file @current
           @history.unshift @current
         end
