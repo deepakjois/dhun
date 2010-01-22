@@ -195,6 +195,17 @@ History
     History:
     0 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
     
+Saving Playlist
+
+    $ dhun save_playlist /tmp/playlist.pls
+    created /tmp/playlist
+    
+Loading Playlist
+
+    $ dhun load_playlist /tmp/playlist.pls
+    14 files queued
+    loaded playlist
+
 
 ### Stopping Dhun
 
