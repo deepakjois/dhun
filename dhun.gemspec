@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'dhun'
-  s.version = '0.6.3'
+  s.version = '0.6.5'
   s.summary = "Minimalist music player for OS X"
   s.date = '2010-01-22'
   s.email = 'deepak.jois@gmail.com'
@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.add_dependency('daemons', '>=1.0.10')
   s.add_dependency('thor', '>=0.12.0')
   s.add_dependency('ruby-mp3info','>=0.6.13')
+  s.add_dependency('visionmedia-growl','>=1.0.3')
   s.authors = ["Deepak Jois"]
   # = MANIFEST =
   s.files = %w[

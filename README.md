@@ -19,7 +19,11 @@ put the binaries in the right place. You will need to have XCode installed for
 the `gem` command to compile the native extensions.
 
     $ gem sources -a http://gemcutter.org
-    $ gem install dhun    
+    $ gem install dhun
+    
+Or to download the bleeding edge, git pull from the repository and run:
+
+    $ sudo rake gem install
 
 ### Starting Dhun
 
