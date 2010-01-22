@@ -218,7 +218,6 @@ This will exit the dhun server.
 There are some features planned in the short run. Please file an issue with a
 feature request, if you have one.
 
-* Saving/Loading playlists
 * Growl Notifications using `growlnotify`
 
 And someday..
