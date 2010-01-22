@@ -222,12 +222,7 @@ This will exit the dhun server.
 There are some features planned in the short run. Please file an issue with a
 feature request, if you have one.
 
-* Growl Notifications using `growlnotify`
-
-And someday..
-
 * iTunes integration
-* Displaying IDv3 information instead of just file names
 
 ## Feedback
 
