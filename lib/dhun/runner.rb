@@ -254,6 +254,7 @@ module Dhun
       # returns song in Artist - Title format
       # if no tags or non-existent, return its input
       def mp3_tag(song)
+        return "" if song.nil?
         return song unless File.exists?(song)
         Mp3Info.open(song) do |mp3| 
           artist = mp3.tag.artist ; title = mp3.tag.title
