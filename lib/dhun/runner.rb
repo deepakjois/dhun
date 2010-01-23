@@ -191,7 +191,7 @@ module Dhun
         response = get_response(action,argument)
         if response
           color = response.success? ? :green : :red
-          say response[:message], color
+          say mp3_tag(response[:message]), color
           if keys
             return keys.inject({}) {|base,key| base[key.to_sym] = response[key.to_sym] ; base}
           end
