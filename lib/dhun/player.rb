@@ -54,6 +54,7 @@ module Dhun
       if @status == :paused
         @status = :playing
         DhunExt.resume
+        notify mp3_tag(@current),:sticky => false
         return true
       end
       return false
