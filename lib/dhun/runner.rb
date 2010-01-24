@@ -1,5 +1,6 @@
 require 'thor'
 require 'json'
+require 'mp3info'
 
 module Dhun
 
@@ -116,7 +117,7 @@ module Dhun
       response = return_response(:status,[:current,:queue])
       return false unless response
       say "Currently Playing:",:magenta
-      say response[:current],:white
+      say mp3_tag(response[:current]),:white
       say "Queue:",:cyan
       say_list response[:queue]
     end
@@ -160,7 +161,7 @@ module Dhun
       end
       create_file path, playlist_save
     end
-    
+
     desc "load_playlist PATH", "loads the playlist"
     def load_playlist(path=nil)
       unless File.exists?(path) or path.nil?
@@ -173,24 +174,24 @@ module Dhun
 
     no_tasks do
 
-      # Writes the queue to the playlist. 
+      # Writes the queue to the playlist.
       # This will be overloaded by other playlist modules
       def playlist_save
         return_response(:status,[:queue])[:queue].collect { |song| song }.join("\n")
       end
-      
+
       # Loads the playlist to the queue.
       # This will be overloaded by other playlist modules.
       def playlist_load(path)
         File.read(path).split("\n")
       end
-      
+
       # send out the command to server and see what it has to say.
       def return_response(action,keys,argument=[])
         response = get_response(action,argument)
         if response
           color = response.success? ? :green : :red
-          say response[:message], color
+          say mp3_tag(response[:message]), color
           if keys
             return keys.inject({}) {|base,key| base[key.to_sym] = response[key.to_sym] ; base}
           end
@@ -243,9 +244,21 @@ module Dhun
       # prints out list with each index value
       # in pretty format! (contrasting colors)
       def say_list(list)
+        return "empty" if (list.nil? or list.empty?)
         list.each_with_index do |item,index|
           color = index.even? ? :white : :cyan
-          say("#{index+1} : #{item}",color)
+          say("#{index+1} : #{mp3_tag(item)}",color)
+        end
+      end
+
+      # returns song in Artist - Title format
+      # if no tags or non-existent, return its input
+      def mp3_tag(song)
+        return "" if song.nil?
+        return song unless File.exists?(song)
+        Mp3Info.open(song) do |mp3| 
+          artist = mp3.tag.artist ; title = mp3.tag.title
+          (artist and title) ? "#{artist} - #{title}" : song
         end
       end
 

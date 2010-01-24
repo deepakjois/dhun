@@ -90,7 +90,7 @@ module Dhun
     #next and previous method
     def next_prev(action,message,skip_length)
       track = @player.send(action,skip_length)
-      return [:success, "Dhun is playing #{track}"] if track
+      return [:success, track] if track
       return [:error, "Not enough tracks in #{message}"]
     end
 

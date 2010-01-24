@@ -19,7 +19,11 @@ put the binaries in the right place. You will need to have XCode installed for
 the `gem` command to compile the native extensions.
 
     $ gem sources -a http://gemcutter.org
-    $ gem install dhun    
+    $ gem install dhun
+    
+Or to install the bleeding edge, git pull from the repository and run:
+
+    $ sudo rake gem install
 
 ### Starting Dhun
 
@@ -44,25 +48,23 @@ You can also query the Spotlight database before playing the files, with the
 
     $ dhun query deadmau5
 
-    Querying: deadmau5 | 5 Results
-    1 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/09 Chris Lake vs. Deadmau5 - I Thought Inside Out (Original Mix).mp3
-    2 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/01 Alone With You.mp3
-    3 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/02 Arguru (EDX's 5un5hine Remix).mp3
-    4 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/03 Bye Friend.mp3
-    5 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/04 Clockwork.mp3
-
-
+    Querying: deadmau5 | 6 Results
+    1 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/03 One + One - No Pressure (Deadmau5 Remix).mp3
+    2 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/09 Chris Lake vs. Deadmau5 - I Thought Inside Out (Original Mix).mp3
+    3 : Deadmau5 - Alone With You
+    4 : Deadmau5 - Arguru (EDX's 5un5hine Remix)
+    5 : Deadmau5 - Bye Friend
+    6 : Deadmau5 - Clockwork
 
 you can query based on certain filters such as artist,albums, title, genre and file.
 
     $ dhun query --artist="Paul van Dyk" --genre=trance --file 'Paul' --title in
 
-     Querying: [nil] | artist:Paul van Dyk title:in genre:trance file:Paul
-     3 Results
-     1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/08 - Paul van Dyk - Talk In Grey.mp3
-     2 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/09 - Paul van Dyk - In Circles.mp3
-     3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/10 - Paul van Dyk - In Between.mp3
-
+    Querying: [nil] | artist:Paul van Dyk title:in genre:trance file:Paul
+    3 Results
+    1 : Paul van Dyk - Talk In Grey
+    2 : Paul van Dyk - In Circles
+    3 : Paul van Dyk - In Between
 
 YOu can mix filters with regular queries as well.
 
@@ -70,20 +72,26 @@ YOu can mix filters with regular queries as well.
 
     Querying: paul | title:haunted
     1 Results
-    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    1 : Paul van Dyk - Haunted
 
 You can also pass in multiple regular expressions too. they just need to be seperated by commas (,)
 
     $ dhun query paul,trance
 
-    Querying: paul,trance | 6 Results
-    1 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/201-paul_van_dyk-volume__the_remixes_part_1.mp3
-    2 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/301-paul_van_dyk-volume__the_remixes_part_2.mp3
-    3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/04 - Paul van Dyk - Complicated (Feat. Ashley Tomberlin).mp3
-    4 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
-    5 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica Sutta).mp3
-    6 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/03 - Paul van Dyk - Sabotage.mp3
-
+    Querying: paul,trance | 13 Results
+    1 : Paul van Dyk - Volume (Productions)
+    2 : Paul van Dyk - Volume (Remixes Part 1)
+    3 : Paul van Dyk - Volume (Remixes Part 2)
+    4 : Paul van Dyk - Complicated (Feat. Ashley Tomberlin)
+    5 : Paul van Dyk - Haunted
+    6 : Paul van Dyk - White Lies (Feat. Jessica Sutta)
+    7 : Paul van Dyk - Sabotage
+    8 : Paul van Dyk - Get Back (Feat. Ashley Tomberlin)
+    9 : Paul van Dyk - Far Away
+    10 : Paul van Dyk - Another Sunday
+    11 : Paul van Dyk - Talk In Grey
+    12 : Paul van Dyk - In Circles
+    13 : Paul van Dyk - In Between
 
 Now lets put it all together and go crazy.
 
@@ -91,8 +99,7 @@ Now lets put it all together and go crazy.
 
     Querying: paul van,dyk | title:haunted genre:trance
     1 Results
-    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
-
+    1 : Paul van Dyk - Haunted
 
 ### Playing Files
 
@@ -104,13 +111,20 @@ this can also be done by
 
     $ dhun enqueue paul,trance
 
-    Querying: paul,trance | 6 Results
-    1 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/201-paul_van_dyk-volume__the_remixes_part_1.mp3
-    2 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/301-paul_van_dyk-volume__the_remixes_part_2.mp3
-    3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/04 - Paul van Dyk - Complicated (Feat. Ashley Tomberlin).mp3
-    4 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
-    5 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica Sutta).mp3
-    6 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/03 - Paul van Dyk - Sabotage.mp3
+    Querying: paul,trance | 13 Results
+    1 : Paul van Dyk - Volume (Productions)
+    2 : Paul van Dyk - Volume (Remixes Part 1)
+    3 : Paul van Dyk - Volume (Remixes Part 2)
+    4 : Paul van Dyk - Complicated (Feat. Ashley Tomberlin)
+    5 : Paul van Dyk - Haunted
+    6 : Paul van Dyk - White Lies (Feat. Jessica Sutta)
+    7 : Paul van Dyk - Sabotage
+    8 : Paul van Dyk - Get Back (Feat. Ashley Tomberlin)
+    9 : Paul van Dyk - Far Away
+    10 : Paul van Dyk - Another Sunday
+    11 : Paul van Dyk - Talk In Grey
+    12 : Paul van Dyk - In Circles
+    13 : Paul van Dyk - In Between
     Enter index to queue: 
 
 It will prompt you to enter the index of the songs you want queued.(numbers on the left side)
@@ -119,15 +133,13 @@ If you leave the prompt blank and enter, it will queue ALL the resulting songs.
 
     Enter index to queue 4 5
     selected:
-    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
-    2 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica     Sutta).mp3
+    1 : Paul van Dyk - Complicated (Feat. Ashley Tomberlin)
+    2 : Paul van Dyk - Haunted
     2 files queued
-
 
 Once queued, the songs will begin playing. You can continue to enqueue more songs using `enqueue` command.
     
 ### Controlling Playback
-
 
 Starting Playback(needs to have songs in queue)
 
@@ -169,9 +181,12 @@ Shuffling the queue
 
     $ dhun shuffle
     Queue is shuffled
-    /Users/deepak/Dropbox/shared/music/3 idiots/35634_Give Me Some Sunshine.mp3
-    /Users/deepak/Dropbox/shared/music/Aao Wish Karen/35612_Kuch Aisa.mp3
-    /Users/deepak/Dropbox/shared/music/Coke Studio/Jo-Meray.mp3
+    Queue:
+    1 : Deadmau5 - I Remember (Vocal Mix)
+    2 : Paul van Dyk - Haunted
+    3 : Above & Beyond - I Am What I Am
+    4 : Above & Beyond - Sirens Of The Sea
+    5 : Paul van Dyk - Haunted
 
 ### Other commands
 
@@ -180,22 +195,23 @@ Status
     $ dhun status
     Dhun is running
     Currently Playing:
-    /Volumes/Storage/Music/Hydeout Productions (Second Collection)/02 Sky is Falling (feat. C.L. Smooth).mp3
+    Deadmau5 - I Remember (Vocal Mix)
     Queue:
-    1 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
-    2 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/05 Hikari(feat. Substantial).mp3
+    1 : Paul van Dyk - Haunted
+    2 : Above & Beyond - I Am What I Am
+    3 : Above & Beyond - Sirens Of The Sea
     
 History
 
     $ dhun history
     1 files in history
     History:
-    0 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
+    1 : Deadmau5 - I Remember Feat Kaskade (Instrumental Mix)
     
 Saving Playlist
 
     $ dhun save_playlist /tmp/playlist.pls
-    created /tmp/playlist
+    created /tmp/playlist.plsg
     
 Loading Playlist
 
@@ -215,13 +231,7 @@ This will exit the dhun server.
 There are some features planned in the short run. Please file an issue with a
 feature request, if you have one.
 
-* Saving/Loading playlists
-* Growl Notifications using `growlnotify`
-
-And someday..
-
 * iTunes integration
-* Displaying IDv3 information instead of just file names
 
 ## Feedback
 
