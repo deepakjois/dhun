@@ -29,7 +29,7 @@ the `gem` command to compile the native extensions.
 this runs the Dhun server as a daemon by default. to not run it as a daemon:
 
     $ dhun start_server --foreground
-    or
+or
     $ dhun start_server -f
 
 See `dhun help start_server for more information`
@@ -44,8 +44,7 @@ You can also query the Spotlight database before playing the files, with the
 
     $ dhun query deadmau5
 
-    Querying: deadmau5 | 6 Results
-    0 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/03 One + One - No Pressure (Deadmau5 Remix).mp3
+    Querying: deadmau5 | 5 Results
     1 : /Volumes/Storage/Music/Grand.Theft.Auto.IV-Radio.Station.Rips-AiTB/Electro-Choc/09 Chris Lake vs. Deadmau5 - I Thought Inside Out (Original Mix).mp3
     2 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/01 Alone With You.mp3
     3 : /Volumes/Storage/Music/Deadmau5 - It Sounds Like (MP3, 320bps) [2009]/02 Arguru (EDX's 5un5hine Remix).mp3
@@ -60,9 +59,9 @@ you can query based on certain filters such as artist,albums, title, genre and f
 
      Querying: [nil] | artist:Paul van Dyk title:in genre:trance file:Paul
      3 Results
-     0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/08 - Paul van Dyk - Talk In Grey.mp3
-     1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/09 - Paul van Dyk - In Circles.mp3
-     2 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/10 - Paul van Dyk - In Between.mp3
+     1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/08 - Paul van Dyk - Talk In Grey.mp3
+     2 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/09 - Paul van Dyk - In Circles.mp3
+     3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/10 - Paul van Dyk - In Between.mp3
 
 
 YOu can mix filters with regular queries as well.
@@ -71,14 +70,13 @@ YOu can mix filters with regular queries as well.
 
     Querying: paul | title:haunted
     1 Results
-    0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
 
 You can also pass in multiple regular expressions too. they just need to be seperated by commas (,)
 
     $ dhun query paul,trance
 
-    Querying: paul,trance | 7 Results
-    0 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/101-paul_van_dyk-volume__the_productions.mp3
+    Querying: paul,trance | 6 Results
     1 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/201-paul_van_dyk-volume__the_remixes_part_1.mp3
     2 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/301-paul_van_dyk-volume__the_remixes_part_2.mp3
     3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/04 - Paul van Dyk - Complicated (Feat. Ashley Tomberlin).mp3
@@ -93,7 +91,7 @@ Now lets put it all together and go crazy.
 
     Querying: paul van,dyk | title:haunted genre:trance
     1 Results
-    0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
 
 
 ### Playing Files
@@ -106,8 +104,7 @@ this can also be done by
 
     $ dhun enqueue paul,trance
 
-    Querying: paul,trance | 7 Results
-    0 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/101-paul_van_dyk-volume__the_productions.mp3
+    Querying: paul,trance | 6 Results
     1 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/201-paul_van_dyk-volume__the_remixes_part_1.mp3
     2 : /Volumes/Storage/Music/Paul_Van_Dyk-Volume-3CD-2009-TSP/301-paul_van_dyk-volume__the_remixes_part_2.mp3
     3 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/04 - Paul van Dyk - Complicated (Feat. Ashley Tomberlin).mp3
@@ -122,12 +119,12 @@ If you leave the prompt blank and enter, it will queue ALL the resulting songs.
 
     Enter index to queue 4 5
     selected:
-    0 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
-    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica     Sutta).mp3
+    1 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/01 - Paul van Dyk - Haunted.mp3
+    2 : /Volumes/Storage/Music/Paul van Dyk - In Between (2007)/02 - Paul van Dyk - White Lies (Feat. Jessica     Sutta).mp3
     2 files queued
 
 
-Once queued, the songs will begin playing. you can continue to enqueue more songs via enqueue and play.
+Once queued, the songs will begin playing. You can continue to enqueue more songs using `enqueue` command.
     
 ### Controlling Playback
 
@@ -185,8 +182,8 @@ Status
     Currently Playing:
     /Volumes/Storage/Music/Hydeout Productions (Second Collection)/02 Sky is Falling (feat. C.L. Smooth).mp3
     Queue:
-    0 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
-    1 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/05 Hikari(feat. Substantial).mp3
+    1 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/04 Imaginary Folklore.mp3
+    2 : /Volumes/Storage/Music/Hydeout Productions (Second Collection)/05 Hikari(feat. Substantial).mp3
     
 History
 
