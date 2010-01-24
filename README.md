@@ -7,7 +7,9 @@
 
 Dhun is a minimalist commandline music player for OS X.
 
-It uses Spotlight to search for audio files on your computer and play them.
+It uses Spotlight to search for audio files on your computer and play them. If
+[Growl](http://growl.info) is installed, notifications are shown everytime a
+new song starts playing.
 
 ## Quickstart
 
@@ -226,10 +228,11 @@ This will exit the dhun server.
 
     $ dhun stop_server
 
-## Coming Soon
+## New Features
 
-There are some features planned in the short run. Please file an issue with a
-feature request, if you have one.
+Please file an issue with a feature request, if you have one.
+
+These things are planned someday:
 
 * iTunes integration
 
