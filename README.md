@@ -7,9 +7,7 @@
 
 Dhun is a minimalist commandline music player for OS X.
 
-It uses Spotlight to search for audio files on your computer and play them. If
-[Growl](http://growl.info) is installed, notifications are shown everytime a
-new song starts playing.
+It uses Spotlight to search for audio files on your computer and play them.
 
 ## Quickstart
 
@@ -26,6 +24,10 @@ the `gem` command to compile the native extensions.
 Or to install the bleeding edge, git pull from the repository and run:
 
     $ sudo rake gem install
+
+For notifications, you will need [Growl](http://growl.info) installed along
+with the [growlnotify](http://growl.info/documentation/growlnotify.php) tool
+that comes with Growl (but needs to be installed separately).
 
 ### Starting Dhun
 
